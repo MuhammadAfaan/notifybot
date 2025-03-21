@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -96,6 +99,56 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+  
+  input, button {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  input:focus {
+    @apply ring-1 ring-custom-olive-green/30 outline-none;
+  }
+  
+  /* Custom scroll bar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+}
+
+@layer components {
+  .form-input {
+    @apply px-3 py-2 w-full rounded-md border border-gray-200 
+    focus:border-custom-olive-green/40 text-sm shadow-sm 
+    placeholder:text-gray-400 focus:outline-none transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply w-full bg-custom-olive-green text-white font-medium py-2.5 px-4 rounded-md
+    shadow-sm hover:shadow-md hover:bg-custom-olive-green/90 active:bg-custom-olive-green/95
+    transition-all duration-300 transform hover:-translate-y-0.5
+    active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  
+  .card-login {
+    @apply bg-white rounded-xl shadow-subtle p-8 max-w-md w-full
+    transform transition-all duration-500 animate-fade-in;
+  }
+  
+  .link {
+    @apply text-gray-500 hover:text-custom-olive-green transition-colors 
+    duration-300 text-sm;
   }
 }
