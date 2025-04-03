@@ -20,6 +20,7 @@ import UserGuide from "./pages/UserGuide";
 import OrderCredits from "./pages/OrderCredits";
 import HelpSupport from "./pages/HelpSupport";
 import ForgotPassword from "./pages/ForgotPassword";
+import AvailableTags from "./pages/AvailableTags";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/devices/new" element={<NewDevice />} />
           <Route path="/devices/:id" element={<DeviceDetail />} />
           <Route path="/shopify-templates" element={<ShopifyTemplates />} />
+          <Route path="/available-tags" element={<AvailableTags />} />
           <Route path="/contact-book" element={<ContactBook />} />
           <Route path="/message-log" element={<MessageLog />} />
           <Route path="/guide" element={<UserGuide />} />

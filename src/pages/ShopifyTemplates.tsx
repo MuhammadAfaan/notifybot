@@ -9,7 +9,9 @@ import {
   Trash, 
   Copy, 
   ChevronLeft, 
-  ChevronRight
+  ChevronRight,
+  MoreHorizontal,
+  FileSearch
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -45,6 +47,7 @@ type Template = {
   event: string;
   message: string;
   createdAt: string;
+  status: 'active' | 'inactive';
 };
 
 const ShopifyTemplates = () => {
@@ -54,6 +57,13 @@ const ShopifyTemplates = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Stats counters
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    inactive: 0
+  });
   
   // State for pagination that would be managed with API calls
   const [pagination, setPagination] = useState({
@@ -79,29 +89,7 @@ const ShopifyTemplates = () => {
       // Simulate API request
       setTimeout(() => {
         // This is mock data - in a real app, this would come from an API
-        const mockTemplates: Template[] = [
-          {
-            id: '1',
-            name: 'Order Confirmation',
-            event: 'order.created',
-            message: 'Thank you for your order. Your order #{{order.number}} has been received and is being processed.',
-            createdAt: '2025-03-01T10:00:00Z'
-          },
-          {
-            id: '2',
-            name: 'Shipping Confirmation',
-            event: 'order.fulfilled',
-            message: 'Good news! Your order #{{order.number}} has been shipped. Track your package: {{tracking.url}}',
-            createdAt: '2025-03-02T14:30:00Z'
-          },
-          {
-            id: '3',
-            name: 'Abandoned Cart',
-            event: 'cart.abandoned',
-            message: 'We noticed you left some items in your cart. Return to complete your purchase: {{cart.url}}',
-            createdAt: '2025-03-03T09:15:00Z'
-          }
-        ];
+        const mockTemplates: Template[] = [];
         
         // Filter templates by search term if provided
         const filteredTemplates = searchTerm 
@@ -113,6 +101,14 @@ const ShopifyTemplates = () => {
           : mockTemplates;
         
         setTemplates(filteredTemplates);
+        
+        // Update stats
+        setStats({
+          total: filteredTemplates.length,
+          active: filteredTemplates.filter(t => t.status === 'active').length,
+          inactive: filteredTemplates.filter(t => t.status === 'inactive').length
+        });
+        
         setPagination({
           currentPage: 1,
           totalPages: Math.ceil(filteredTemplates.length / 10),
@@ -146,11 +142,19 @@ const ShopifyTemplates = () => {
       name: newTemplate.name,
       event: newTemplate.event,
       message: newTemplate.message,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      status: 'active'
     };
     
     // Add to local state (in a real app, the API would return the new template)
     setTemplates(prev => [createdTemplate, ...prev]);
+    
+    // Update stats
+    setStats(prev => ({
+      ...prev,
+      total: prev.total + 1,
+      active: prev.active + 1
+    }));
     
     // Reset form and close dialog
     setNewTemplate({ name: '', event: '', message: '' });
@@ -181,11 +185,11 @@ const ShopifyTemplates = () => {
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Shopify Templates</h1>
+        <h1 className="text-2xl font-semibold">Shopify Messages</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
-              <Plus size={16} className="mr-1" /> Create Template
+              Create New
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[525px]">
@@ -247,6 +251,22 @@ const ShopifyTemplates = () => {
         </Dialog>
       </div>
 
+      {/* Stats Cards - Matching the design from the screenshot */}
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 shadow-sm">
+          <h3 className="text-gray-600 font-medium mb-2">Total Messages</h3>
+          <p className="text-4xl font-bold text-gray-800">{stats.total}</p>
+        </div>
+        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 shadow-sm">
+          <h3 className="text-gray-600 font-medium mb-2">Active Messages</h3>
+          <p className="text-4xl font-bold text-green-600">{stats.active}</p>
+        </div>
+        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 shadow-sm">
+          <h3 className="text-gray-600 font-medium mb-2">Inactive Messages</h3>
+          <p className="text-4xl font-bold text-orange-500">{stats.inactive}</p>
+        </div>
+      </div>
+
       <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
@@ -259,118 +279,136 @@ const ShopifyTemplates = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left border-b border-gray-200">
-                <th className="p-4 font-medium">Name</th>
-                <th className="p-4 font-medium">Event</th>
-                <th className="p-4 font-medium">Message</th>
-                <th className="p-4 font-medium">Created</th>
-                <th className="p-4 font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="p-4 text-center">
-                    <div className="flex justify-center items-center space-x-2">
-                      <div className="w-4 h-4 rounded-full bg-gray-200 animate-pulse"></div>
-                      <div className="w-4 h-4 rounded-full bg-gray-300 animate-pulse"></div>
-                      <div className="w-4 h-4 rounded-full bg-gray-200 animate-pulse"></div>
-                    </div>
-                  </td>
+      {templates.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+          <div className="flex justify-center mb-4">
+            <FileSearch className="h-16 w-16 text-gray-300" />
+          </div>
+          <h3 className="text-xl font-medium text-gray-700 mb-2">Opps, there is no shopify message found....</h3>
+          <p className="text-gray-500 max-w-md mx-auto mb-6">
+            Create your first Shopify message template to get started with automated messaging.
+          </p>
+          <Button 
+            onClick={() => setIsDialogOpen(true)}
+            className="bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+          >
+            Create New Template
+          </Button>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left border-b border-gray-200">
+                  <th className="p-4 font-medium">Name</th>
+                  <th className="p-4 font-medium">Event</th>
+                  <th className="p-4 font-medium">Message</th>
+                  <th className="p-4 font-medium">Created</th>
+                  <th className="p-4 font-medium">Actions</th>
                 </tr>
-              ) : displayedTemplates.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="p-4 text-center text-gray-500">No data available in table</td>
-                </tr>
-              ) : (
-                // Map through templates from the API response
-                displayedTemplates.map((template) => (
-                  <tr key={template.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="p-4 font-medium">{template.name}</td>
-                    <td className="p-4">
-                      <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">
-                        {template.event}
-                      </span>
-                    </td>
-                    <td className="p-4 max-w-xs">
-                      <div className="truncate text-gray-600">{template.message}</div>
-                    </td>
-                    <td className="p-4 text-gray-500 text-sm">{formatDate(template.createdAt)}</td>
-                    <td className="p-4">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="cursor-pointer flex items-center">
-                            <Edit className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer flex items-center">
-                            <Copy className="mr-2 h-4 w-4" /> Duplicate
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer flex items-center text-red-600">
-                            <Trash className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="p-4 text-center">
+                      <div className="flex justify-center items-center space-x-2">
+                        <div className="w-4 h-4 rounded-full bg-gray-200 animate-pulse"></div>
+                        <div className="w-4 h-4 rounded-full bg-gray-300 animate-pulse"></div>
+                        <div className="w-4 h-4 rounded-full bg-gray-200 animate-pulse"></div>
+                      </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className="p-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
-          <div>
-            Showing {pagination.totalItems === 0 ? 0 : startIndex + 1} to {endIndex} of {pagination.totalItems} entries
+                ) : displayedTemplates.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="p-4 text-center text-gray-500">No data available in table</td>
+                  </tr>
+                ) : (
+                  // Map through templates from the API response
+                  displayedTemplates.map((template) => (
+                    <tr key={template.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="p-4 font-medium">{template.name}</td>
+                      <td className="p-4">
+                        <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">
+                          {template.event}
+                        </span>
+                      </td>
+                      <td className="p-4 max-w-xs">
+                        <div className="truncate text-gray-600">{template.message}</div>
+                      </td>
+                      <td className="p-4 text-gray-500 text-sm">{formatDate(template.createdAt)}</td>
+                      <td className="p-4">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem className="cursor-pointer flex items-center">
+                              <Edit className="mr-2 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer flex items-center">
+                              <Copy className="mr-2 h-4 w-4" /> Duplicate
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer flex items-center text-red-600">
+                              <Trash className="mr-2 h-4 w-4" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-          <div className="flex space-x-1">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 w-8 p-0"
-              disabled={pagination.currentPage === 1}
-              onClick={() => setPagination({...pagination, currentPage: 1})}
-            >
-              «
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 w-8 p-0"
-              disabled={pagination.currentPage === 1}
-              onClick={() => setPagination({...pagination, currentPage: pagination.currentPage - 1})}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 w-8 p-0"
-              disabled={pagination.currentPage === pagination.totalPages}
-              onClick={() => setPagination({...pagination, currentPage: pagination.currentPage + 1})}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 w-8 p-0"
-              disabled={pagination.currentPage === pagination.totalPages}
-              onClick={() => setPagination({...pagination, currentPage: pagination.totalPages})}
-            >
-              »
-            </Button>
+          <div className="p-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
+            <div>
+              Showing {pagination.totalItems === 0 ? 0 : startIndex + 1} to {endIndex} of {pagination.totalItems} entries
+            </div>
+            <div className="flex space-x-1">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                disabled={pagination.currentPage === 1}
+                onClick={() => setPagination({...pagination, currentPage: 1})}
+              >
+                «
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                disabled={pagination.currentPage === 1}
+                onClick={() => setPagination({...pagination, currentPage: pagination.currentPage - 1})}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                disabled={pagination.currentPage === pagination.totalPages}
+                onClick={() => setPagination({...pagination, currentPage: pagination.currentPage + 1})}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                disabled={pagination.currentPage === pagination.totalPages}
+                onClick={() => setPagination({...pagination, currentPage: pagination.totalPages})}
+              >
+                »
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </DashboardLayout>
   );
 };
