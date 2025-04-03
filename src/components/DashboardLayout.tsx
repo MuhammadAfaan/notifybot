@@ -2,7 +2,7 @@
 import React from 'react';
 import OrderlySidebar from './OrderlySidebar';
 import { Button } from './ui/button';
-import { Settings, DollarSign } from 'lucide-react';
+import { Settings, DollarSign, UserCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type DashboardLayoutProps = {
@@ -27,9 +27,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <Settings className="h-5 w-5" />
               </Button>
             </div>
-            <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-              F
-            </div>
+            <Link to="/profile">
+              <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold cursor-pointer">
+                F
+              </div>
+            </Link>
           </div>
         </header>
         <main className="p-6">

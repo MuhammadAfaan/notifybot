@@ -7,7 +7,6 @@ import {
   Smartphone, 
   ShoppingBag, 
   Truck, 
-  FileText, 
   Book, 
   MessageSquare,
   HelpCircle,
@@ -43,8 +42,8 @@ const OrderlySidebar = () => {
         <SidebarItem 
           icon={<LayoutDashboard size={18} />} 
           label="Dashboard" 
-          to="/" 
-          active={path === '/'} 
+          to="/dashboard" 
+          active={path === '/dashboard'} 
         />
       </div>
 
@@ -75,29 +74,23 @@ const OrderlySidebar = () => {
           active={path.includes('couriers') && !path.includes('templates')} 
         />
         <SidebarItem 
-          icon={<FileText size={18} />} 
-          label="Courier Templates" 
-          to="/courier-templates" 
-          active={path.includes('courier-templates')} 
-        />
-        <SidebarItem 
           icon={<Book size={18} />} 
           label="Contact Book" 
-          to="/contacts" 
-          active={path.includes('contacts')} 
+          to="/contact-book" 
+          active={path.includes('contact-book')} 
         />
         <SidebarItem 
           icon={<MessageSquare size={18} />} 
           label="Message Log" 
-          to="/messages" 
-          active={path.includes('messages')} 
+          to="/message-log" 
+          active={path.includes('message-log')} 
         />
       </div>
 
       <div className="orderly-sidebar-section">Settings</div>
       <div className="space-y-1">
         <SidebarItem 
-          icon={<Settings size={18} />} 
+          icon={<HelpCircle size={18} />} 
           label="User Guide" 
           to="/guide" 
           active={path.includes('guide')} 
@@ -109,7 +102,7 @@ const OrderlySidebar = () => {
           active={path.includes('credits')} 
         />
         <SidebarItem 
-          icon={<HelpCircle size={18} />} 
+          icon={<Settings size={18} />} 
           label="Help & Support" 
           to="/support" 
           active={path.includes('support')} 
