@@ -233,11 +233,11 @@ const ShopifyTemplates = () => {
                   id="message-template"
                   value={newTemplate.message}
                   onChange={(e) => setNewTemplate({...newTemplate, message: e.target.value})}
-                  placeholder="Enter your message template with variables like {{order.number}}"
+                  placeholder="Enter your message template with variables like [Order No.]"
                   className="min-h-[100px]"
                 />
                 <p className="text-sm text-muted-foreground">
-                  Available variables: {{order.number}}, {{customer.name}}, {{tracking.url}}, {{cart.url}}
+                  Available variables: [Order No.], [User Name], [Tracking Url], [Products]
                 </p>
               </div>
             </div>
