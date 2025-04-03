@@ -6,7 +6,6 @@ import {
   LayoutDashboard, 
   Smartphone, 
   ShoppingBag, 
-  Truck, 
   Book, 
   MessageSquare,
   HelpCircle,
@@ -32,6 +31,9 @@ const OrderlySidebar = () => {
   const location = useLocation();
   const path = location.pathname;
 
+  // This credits value would normally be loaded from an API
+  const availableCredits = 500;
+
   return (
     <div className="w-64 bg-white border-r border-gray-200 min-h-screen p-4">
       <div className="mb-6">
@@ -47,14 +49,16 @@ const OrderlySidebar = () => {
         />
       </div>
 
+      {/* Credits card - This would normally fetch data from the server */}
       <div className="bg-white shadow-sm rounded-lg p-4 mb-6">
         <div className="text-sm font-medium mb-2">Available Credits</div>
-        <div className="text-2xl font-bold text-gray-800 mb-1">500</div>
+        <div className="text-2xl font-bold text-gray-800 mb-1">{availableCredits}</div>
         <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-tr from-transparent to-blue-100/50 rounded-b-lg -z-10"></div>
       </div>
 
       <div className="orderly-sidebar-section">App</div>
       <div className="space-y-1">
+        {/* These links would typically be configured based on user permissions */}
         <SidebarItem 
           icon={<Smartphone size={18} />} 
           label="My Devices" 
@@ -66,12 +70,6 @@ const OrderlySidebar = () => {
           label="Shopify Templates" 
           to="/shopify-templates" 
           active={path.includes('shopify')} 
-        />
-        <SidebarItem 
-          icon={<Truck size={18} />} 
-          label="Couriers" 
-          to="/couriers" 
-          active={path.includes('couriers') && !path.includes('templates')} 
         />
         <SidebarItem 
           icon={<Book size={18} />} 

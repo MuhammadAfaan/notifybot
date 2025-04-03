@@ -8,12 +8,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
+  // Form state would typically be managed with a form library like react-hook-form
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
+  // This would normally connect to an authentication API
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

@@ -19,7 +19,9 @@ import MessageLog from "./pages/MessageLog";
 import UserGuide from "./pages/UserGuide";
 import OrderCredits from "./pages/OrderCredits";
 import HelpSupport from "./pages/HelpSupport";
+import ForgotPassword from "./pages/ForgotPassword";
 
+// Create a client for React Query
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -29,9 +31,13 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          
+          {/* Protected routes - In a real app, these would be protected by auth */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/devices" element={<MyDevices />} />
