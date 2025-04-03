@@ -99,7 +99,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-custom-orderly-bg text-foreground font-sans;
   }
   
   input, button {
@@ -135,9 +135,9 @@
     placeholder:text-gray-400 focus:outline-none transition-all duration-300;
   }
   
-  .btn-primary {
-    @apply w-full bg-custom-olive-green text-white font-medium py-2.5 px-4 rounded-md
-    shadow-sm hover:shadow-md hover:bg-custom-olive-green/90 active:bg-custom-olive-green/95
+  .orderly-btn-primary {
+    @apply w-full bg-custom-orderly-green text-white font-medium py-2.5 px-4 rounded-md
+    shadow-sm hover:shadow-md hover:bg-custom-orderly-green/90 active:bg-custom-orderly-green/95
     transition-all duration-300 transform hover:-translate-y-0.5
     active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none;
   }
@@ -148,7 +148,31 @@
   }
   
   .link {
-    @apply text-gray-500 hover:text-custom-olive-green transition-colors 
+    @apply text-gray-500 hover:text-custom-orderly-green transition-colors 
     duration-300 text-sm;
+  }
+
+  .orderly-card {
+    @apply bg-white rounded-lg shadow-sm p-4 m-2;
+  }
+
+  .orderly-panel {
+    @apply bg-white rounded-lg shadow-sm mb-4;
+  }
+
+  .orderly-content {
+    @apply p-6;
+  }
+
+  .orderly-sidebar-item {
+    @apply flex items-center text-gray-600 hover:text-custom-orderly-green px-3 py-2 rounded-md hover:bg-gray-100 transition-colors duration-200 mb-1;
+  }
+
+  .orderly-sidebar-item.active {
+    @apply text-custom-orderly-green font-medium;
+  }
+
+  .orderly-sidebar-section {
+    @apply text-xs uppercase text-gray-400 font-medium mt-6 mb-2 px-3;
   }
 }
