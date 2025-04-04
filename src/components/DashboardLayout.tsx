@@ -67,20 +67,22 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         <header className="bg-white py-2 px-6 flex justify-between items-center border-b border-gray-200 sticky top-0 z-10">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="md:hidden" 
-            onClick={toggleSidebar}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-          
-          {/* On mobile, only show company logo when sidebar is hidden */}
-          <div className="md:hidden flex-1 flex justify-center">
-            {!sidebarVisible && (
-              <span className="font-bold text-notifybot-blue">NotifyBot</span>
-            )}
+          <div className="flex items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden" 
+              onClick={toggleSidebar}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+            
+            {/* On mobile, only show company logo when sidebar is hidden */}
+            <div className="md:hidden ml-2">
+              {!sidebarVisible && (
+                <span className="font-bold text-notifybot-blue">NotifyBot</span>
+              )}
+            </div>
           </div>
           
           {/* Right-side action buttons */}

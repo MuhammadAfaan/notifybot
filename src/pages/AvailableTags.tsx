@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Tag, Copy, ChevronLeft } from 'lucide-react';
+import { Copy, ChevronLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -56,7 +56,7 @@ const AvailableTags = () => {
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-2">
             <Link to="/shopify-templates" className="text-gray-500 hover:text-notifybot-blue">
               <Button variant="ghost" size="sm" className="gap-1">
                 <ChevronLeft className="h-4 w-4" />
@@ -64,7 +64,7 @@ const AvailableTags = () => {
               </Button>
             </Link>
           </div>
-          <h1 className="text-2xl font-semibold">Available Message Tags</h1>
+          <h1 className="text-2xl font-semibold">Available Tags</h1>
           <p className="text-gray-500 mt-1">
             Use these tags in your Shopify message templates. They will be automatically replaced with actual data when messages are sent.
           </p>
