@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import OrderlyLogo from "@/components/OrderlyLogo";
+import NotifyBotLogo from "@/components/NotifyBotLogo";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
 
@@ -30,11 +30,11 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-custom-orderly-bg p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-notifybot-bg p-4">
       <div className="bg-white rounded-lg shadow-sm max-w-md w-full p-8 animate-fade-in">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
-            <OrderlyLogo />
+            <NotifyBotLogo />
           </div>
           {sent ? (
             <>
@@ -62,7 +62,7 @@ const ForgotPassword = () => {
             </Button>
             <Link to="/login">
               <Button 
-                className="w-full bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+                className="w-full bg-notifybot-blue hover:bg-notifybot-dark-blue"
               >
                 <ArrowLeft size={16} className="mr-2" />
                 Back to Login
@@ -88,14 +88,14 @@ const ForgotPassword = () => {
 
             <Button 
               type="submit" 
-              className="w-full bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+              className="w-full bg-notifybot-blue hover:bg-notifybot-dark-blue"
               disabled={loading}
             >
               {loading ? "Sending..." : "Send Reset Link"}
             </Button>
 
             <div className="text-center">
-              <Link to="/login" className="text-sm text-custom-orderly-green hover:underline">
+              <Link to="/login" className="text-sm text-notifybot-blue hover:underline">
                 Back to Login
               </Link>
             </div>

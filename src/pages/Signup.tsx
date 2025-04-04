@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import OrderlyLogo from "@/components/OrderlyLogo";
+import NotifyBotLogo from "@/components/NotifyBotLogo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
@@ -52,15 +52,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-custom-orderly-bg p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-notifybot-bg p-4">
       <div className="bg-white rounded-lg shadow-sm max-w-md w-full p-8 animate-fade-in">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
-            <OrderlyLogo />
+            <NotifyBotLogo />
           </div>
           <h1 className="text-2xl font-semibold text-gray-800">Register</h1>
           <p className="text-gray-500 mt-2">
-            Have an account? <Link to="/login" className="text-custom-orderly-green hover:underline">Login</Link>
+            Have an account? <Link to="/login" className="text-notifybot-blue hover:underline">Login</Link>
           </p>
         </div>
 
@@ -137,13 +137,13 @@ const Signup = () => {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              I accept the <a href="#" className="text-custom-orderly-green hover:underline">terms</a> and <a href="#" className="text-custom-orderly-green hover:underline">privacy policy</a>
+              I accept the <a href="#" className="text-notifybot-blue hover:underline">terms</a> and <a href="#" className="text-notifybot-blue hover:underline">privacy policy</a>
             </label>
           </div>
 
           <Button 
             type="submit" 
-            className="w-full bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+            className="w-full bg-notifybot-blue hover:bg-notifybot-dark-blue"
             disabled={loading}
           >
             {loading ? "Registering..." : "Register"}
