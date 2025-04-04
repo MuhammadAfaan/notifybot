@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Tag, Copy, ChevronLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -32,12 +32,6 @@ const AvailableTags = () => {
     { name: 'Shipping Company', value: '[Shipping Company]', description: 'Name of the shipping carrier', category: 'shipping' },
   ];
 
-  // Group tags by category
-  const orderTags = tags.filter(tag => tag.category === 'order');
-  const customerTags = tags.filter(tag => tag.category === 'customer');
-  const productTags = tags.filter(tag => tag.category === 'product');
-  const shippingTags = tags.filter(tag => tag.category === 'shipping');
-
   // Function to copy tag to clipboard
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(
@@ -58,39 +52,6 @@ const AvailableTags = () => {
     );
   };
 
-  // Reusable component for rendering tag groups
-  const TagGroup = ({ title, tagList }: { title: string, tagList: TagData[] }) => (
-    <div className="mb-8">
-      <h3 className="text-lg font-medium mb-4 text-gray-700">{title}</h3>
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="divide-y divide-gray-100">
-          {tagList.map((tag) => (
-            <div key={tag.name} className="flex justify-between items-center p-4 hover:bg-gray-50">
-              <div className="flex items-center">
-                <Tag className="h-4 w-4 mr-3 text-notifybot-blue" />
-                <div>
-                  <div className="font-medium text-gray-700">{tag.name}</div>
-                  <div className="text-sm text-gray-500">{tag.description}</div>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <code className="text-sm bg-gray-100 px-2 py-1 rounded mr-3 text-gray-600">{tag.value}</code>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="text-gray-400 hover:text-notifybot-blue"
-                  onClick={() => copyToClipboard(tag.value)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
@@ -110,11 +71,35 @@ const AvailableTags = () => {
         </div>
       </div>
 
-      <div className="space-y-4">
-        {orderTags.length > 0 && <TagGroup title="Order Information" tagList={orderTags} />}
-        {customerTags.length > 0 && <TagGroup title="Customer Information" tagList={customerTags} />}
-        {productTags.length > 0 && <TagGroup title="Product Information" tagList={productTags} />}
-        {shippingTags.length > 0 && <TagGroup title="Shipping Information" tagList={shippingTags} />}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="text-left py-3 px-6 text-gray-700 font-medium">Field Name</th>
+                <th className="text-left py-3 px-6 text-gray-700 font-medium">Tag</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {tags.map((tag) => (
+                <tr key={tag.name} className="hover:bg-gray-50">
+                  <td className="py-3 px-6 text-gray-700">{tag.name}</td>
+                  <td className="py-3 px-6 flex items-center">
+                    <code className="text-sm bg-gray-100 px-2 py-1 rounded mr-3 text-gray-600">{tag.value}</code>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-gray-400 hover:text-notifybot-blue"
+                      onClick={() => copyToClipboard(tag.value)}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </DashboardLayout>
   );

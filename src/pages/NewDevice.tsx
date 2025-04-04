@@ -1,76 +1,201 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+// Form validation schema
+const deviceFormSchema = z.object({
+  deviceName: z.string().min(1, "Device name is required")
+});
+
+type DeviceFormValues = z.infer<typeof deviceFormSchema>;
 
 const NewDevice = () => {
-  const [deviceName, setDeviceName] = useState('');
+  const [step, setStep] = useState<'form' | 'qr'>('form');
+  const [deviceId, setDeviceId] = useState<string>('');
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleCreateDevice = () => {
-    if (!deviceName) {
-      toast({
-        title: "Device name required",
-        description: "Please enter a device name",
-        variant: "destructive",
-      });
-      return;
+  const form = useForm<DeviceFormValues>({
+    resolver: zodResolver(deviceFormSchema),
+    defaultValues: {
+      deviceName: ''
     }
+  });
 
+  const onSubmit = (data: DeviceFormValues) => {
+    // This would be an API call in a real application
+    // Simulate API call to create device
     toast({
       title: "Device created",
       description: "You'll now need to connect your device",
     });
-    // Redirect would happen here
+    
+    // Simulate getting a device ID from the API
+    const mockDeviceId = Math.random().toString(36).substring(2, 15);
+    setDeviceId(mockDeviceId);
+    setStep('qr');
+  };
+
+  const handleDiscard = () => {
+    navigate('/devices');
   };
 
   return (
     <DashboardLayout>
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold">Create new device</h1>
-          <Link to="/devices">
-            <Button variant="outline">Discard</Button>
-          </Link>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <h2 className="text-lg font-medium mb-6">Device Information</h2>
-        <div className="space-y-4 max-w-md">
-          <div>
-            <label htmlFor="deviceName" className="block text-sm font-medium text-gray-700 mb-1">
-              Device Name: <span className="text-red-500">*</span>
-            </label>
-            <Input 
-              id="deviceName"
-              placeholder="My iPhone 16 Pro" 
-              value={deviceName}
-              onChange={(e) => setDeviceName(e.target.value)}
-            />
+      {step === 'form' ? (
+        <>
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl font-semibold">Create new device</h1>
+              <Button variant="outline" onClick={handleDiscard}>Discard</Button>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-medium">You're almost done!</h2>
-          <div className="space-x-4">
-            <Link to="/devices">
-              <Button variant="outline">Discard</Button>
-            </Link>
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h2 className="text-lg font-medium mb-6">Device Information</h2>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+                <FormField
+                  control={form.control}
+                  name="deviceName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">
+                        Device Name: <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="My iPhone 16 Pro" 
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="pt-4">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-medium">You're almost done!</h2>
+                    <div className="space-x-4">
+                      <Button variant="outline" onClick={handleDiscard}>
+                        Discard
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        className="bg-notifybot-blue hover:bg-notifybot-blue/90 text-white"
+                      >
+                        Create Device
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </>
+      ) : (
+        // QR code screen - shown after device creation
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold">Scan the QR Code On Your WhatsApp Mobile App</h2>
+            </div>
+            <div className="p-10 flex justify-center">
+              <div className="w-64 h-64">
+                {/* This would be generated by the API in a real app */}
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${deviceId}`} 
+                  alt="QR Code" 
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold">How to Connect?</h2>
+            </div>
+            <div className="p-6">
+              {/* Instructions content from DeviceDetail */}
+              <div className="flex">
+                <div className="mr-6 relative">
+                  <div className="absolute left-2.5 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-notifybot-blue text-white relative z-10">
+                    <span className="text-xs">1</span>
+                  </div>
+                  <div className="mt-16 flex items-center justify-center w-5 h-5 rounded-full bg-notifybot-blue text-white relative z-10">
+                    <span className="text-xs">2</span>
+                  </div>
+                  <div className="mt-16 flex items-center justify-center w-5 h-5 rounded-full bg-notifybot-blue text-white relative z-10">
+                    <span className="text-xs">3</span>
+                  </div>
+                  <div className="mt-16 flex items-center justify-center w-5 h-5 rounded-full bg-notifybot-blue text-white relative z-10">
+                    <span className="text-xs">4</span>
+                  </div>
+                </div>
+                <div className="space-y-12">
+                  {/* Instructions here */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="text-notifybot-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                      </div>
+                      <h3 className="font-medium">Step 1</h3>
+                    </div>
+                    <p className="text-gray-600 text-sm">Open WhatsApp on your phone</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="text-notifybot-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                      </div>
+                      <h3 className="font-medium">Step 2</h3>
+                    </div>
+                    <p className="text-gray-600 text-sm">Tap Menu or Settings and select Linked Devices</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="text-notifybot-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                      </div>
+                      <h3 className="font-medium">Step 3</h3>
+                    </div>
+                    <p className="text-gray-600 text-sm">Tap on Link a Device</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="text-notifybot-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                      </div>
+                      <h3 className="font-medium">Step 4</h3>
+                    </div>
+                    <p className="text-gray-600 text-sm">Point your phone to this screen to scan the QR code</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-span-1 md:col-span-2 mt-4 flex justify-end">
             <Button 
-              className="bg-custom-orderly-green hover:bg-custom-orderly-green/90"
-              onClick={handleCreateDevice}
+              onClick={() => navigate('/devices')}
+              className="bg-notifybot-blue hover:bg-notifybot-blue/90 text-white"
             >
-              Create Device
+              Done
             </Button>
           </div>
         </div>
-      </div>
+      )}
     </DashboardLayout>
   );
 };
