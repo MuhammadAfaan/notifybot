@@ -38,19 +38,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -99,7 +92,7 @@
   }
 
   body {
-    @apply bg-custom-orderly-bg text-foreground font-sans;
+    @apply bg-notifybot-bg text-foreground font-sans;
   }
   
   input, button {
@@ -107,7 +100,7 @@
   }
   
   input:focus {
-    @apply ring-1 ring-custom-olive-green/30 outline-none;
+    @apply ring-1 ring-notifybot-blue/30 outline-none;
   }
   
   /* Custom scroll bar */
@@ -131,13 +124,13 @@
 @layer components {
   .form-input {
     @apply px-3 py-2 w-full rounded-md border border-gray-200 
-    focus:border-custom-olive-green/40 text-sm shadow-sm 
+    focus:border-notifybot-blue/40 text-sm shadow-sm 
     placeholder:text-gray-400 focus:outline-none transition-all duration-300;
   }
   
-  .orderly-btn-primary {
-    @apply w-full bg-custom-orderly-green text-white font-medium py-2.5 px-4 rounded-md
-    shadow-sm hover:shadow-md hover:bg-custom-orderly-green/90 active:bg-custom-orderly-green/95
+  .notifybot-btn-primary {
+    @apply w-full bg-notifybot-blue text-white font-medium py-2.5 px-4 rounded-md
+    shadow-sm hover:shadow-md hover:bg-notifybot-blue/90 active:bg-notifybot-blue/95
     transition-all duration-300 transform hover:-translate-y-0.5
     active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none;
   }
@@ -148,31 +141,31 @@
   }
   
   .link {
-    @apply text-gray-500 hover:text-custom-orderly-green transition-colors 
+    @apply text-gray-500 hover:text-notifybot-blue transition-colors 
     duration-300 text-sm;
   }
 
-  .orderly-card {
+  .notifybot-card {
     @apply bg-white rounded-lg shadow-sm p-4 m-2;
   }
 
-  .orderly-panel {
+  .notifybot-panel {
     @apply bg-white rounded-lg shadow-sm mb-4;
   }
 
-  .orderly-content {
+  .notifybot-content {
     @apply p-6;
   }
 
-  .orderly-sidebar-item {
-    @apply flex items-center text-gray-600 hover:text-custom-orderly-green px-3 py-2 rounded-md hover:bg-gray-100 transition-colors duration-200 mb-1;
+  .notifybot-sidebar-item {
+    @apply flex items-center text-gray-600 hover:text-notifybot-blue px-3 py-2 rounded-md hover:bg-gray-100 transition-colors duration-200 mb-1;
   }
 
-  .orderly-sidebar-item.active {
-    @apply text-custom-orderly-green font-medium;
+  .notifybot-sidebar-item.active {
+    @apply text-notifybot-blue font-medium;
   }
 
-  .orderly-sidebar-section {
+  .notifybot-sidebar-section {
     @apply text-xs uppercase text-gray-400 font-medium mt-6 mb-2 px-3;
   }
 }

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { 
-  Plus, 
   Search, 
   Edit, 
   Trash, 
@@ -45,8 +44,6 @@ import {
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useIsMobile } from '@/hooks/use-mobile';
-import { useSidebar } from '@/components/ui/sidebar';
 
 // Types that would normally be defined in a separate types file
 type Template = {
@@ -75,8 +72,6 @@ type Tag = {
 
 const ShopifyTemplates = () => {
   const { toast } = useToast();
-  const isMobile = useIsMobile();
-  const { toggleSidebar } = useSidebar();
   
   // State for template data that would be fetched from an API
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -86,7 +81,6 @@ const ShopifyTemplates = () => {
   // Mock data for devices and tags
   const [devices, setDevices] = useState<Device[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   
   // Stats counters
   const [stats, setStats] = useState({
@@ -114,71 +108,142 @@ const ShopifyTemplates = () => {
     tags: [] as string[]
   });
 
+  // State for mobile sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   // Load mock devices
   useEffect(() => {
-    // In a real app, this would be an API call to fetch devices
-    const mockDevices: Device[] = [
-      { id: 'dev-1', name: 'iPhone 13', type: 'smartphone' },
-      { id: 'dev-2', name: 'Samsung Galaxy S22', type: 'smartphone' },
-      { id: 'dev-3', name: 'Google Pixel 6', type: 'smartphone' }
-    ];
-    setDevices(mockDevices);
-  }, []);
+    // COMMENT: In a real app, this would be an API call to fetch devices
+    // Example API endpoint: GET /api/devices
+    const fetchDevices = async () => {
+      try {
+        // In a real app this would be:
+        // const response = await fetch('/api/devices');
+        // const data = await response.json();
+        // setDevices(data);
+        
+        // Mock implementation:
+        const mockDevices: Device[] = [
+          { id: 'dev-1', name: 'iPhone 13', type: 'smartphone' },
+          { id: 'dev-2', name: 'Samsung Galaxy S22', type: 'smartphone' },
+          { id: 'dev-3', name: 'Google Pixel 6', type: 'smartphone' }
+        ];
+        setDevices(mockDevices);
+      } catch (error) {
+        console.error('Error fetching devices:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load devices",
+          variant: "destructive"
+        });
+      }
+    };
+    
+    fetchDevices();
+  }, [toast]);
 
   // Load mock tags
   useEffect(() => {
-    // In a real app, this would be an API call to fetch tags
-    const mockTags: Tag[] = [
-      { id: 'tag-1', name: 'Important', color: 'red' },
-      { id: 'tag-2', name: 'Sale', color: 'green' },
-      { id: 'tag-3', name: 'Promotion', color: 'blue' },
-      { id: 'tag-4', name: 'Automated', color: 'purple' },
-      { id: 'tag-5', name: 'Customer Service', color: 'orange' }
-    ];
-    setTags(mockTags);
-  }, []);
+    // COMMENT: In a real app, this would be an API call to fetch tags
+    // Example API endpoint: GET /api/tags
+    const fetchTags = async () => {
+      try {
+        // In a real app this would be:
+        // const response = await fetch('/api/tags');
+        // const data = await response.json();
+        // setTags(data);
+        
+        // Mock implementation:
+        const mockTags: Tag[] = [
+          { id: 'tag-1', name: 'Important', color: 'red' },
+          { id: 'tag-2', name: 'Sale', color: 'green' },
+          { id: 'tag-3', name: 'Promotion', color: 'blue' },
+          { id: 'tag-4', name: 'Automated', color: 'purple' },
+          { id: 'tag-5', name: 'Customer Service', color: 'orange' }
+        ];
+        setTags(mockTags);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load tags",
+          variant: "destructive"
+        });
+      }
+    };
+    
+    fetchTags();
+  }, [toast]);
 
-  // Mock API call to fetch templates - in a real app this would be an actual API call
+  // Mock API call to fetch templates
   useEffect(() => {
-    const fetchTemplates = () => {
+    // COMMENT: In a real app, this would be an API call to fetch templates
+    // Example API endpoint: GET /api/templates?search=${searchTerm}
+    const fetchTemplates = async () => {
       setLoading(true);
       
-      // Simulate API request
-      setTimeout(() => {
-        // This is mock data - in a real app, this would come from an API
-        const mockTemplates: Template[] = [];
+      try {
+        // In a real app this would be:
+        // const response = await fetch(`/api/templates?search=${searchTerm}`);
+        // const data = await response.json();
+        // setTemplates(data.templates);
+        // setStats({
+        //   total: data.stats.total,
+        //   active: data.stats.active,
+        //   inactive: data.stats.inactive
+        // });
+        // setPagination({
+        //   currentPage: data.pagination.current_page,
+        //   totalPages: data.pagination.total_pages,
+        //   totalItems: data.pagination.total_items,
+        //   itemsPerPage: data.pagination.items_per_page
+        // });
         
-        // Filter templates by search term if provided
-        const filteredTemplates = searchTerm 
-          ? mockTemplates.filter(t => 
-              t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              t.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              t.message.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-          : mockTemplates;
-        
-        setTemplates(filteredTemplates);
-        
-        // Update stats
-        setStats({
-          total: filteredTemplates.length,
-          active: filteredTemplates.filter(t => t.status === 'active').length,
-          inactive: filteredTemplates.filter(t => t.status === 'inactive').length
+        // Mock implementation - simulate API request
+        setTimeout(() => {
+          // This is mock data - in a real app, this would come from an API
+          const mockTemplates: Template[] = [];
+          
+          // Filter templates by search term if provided
+          const filteredTemplates = searchTerm 
+            ? mockTemplates.filter(t => 
+                t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                t.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                t.message.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+            : mockTemplates;
+          
+          setTemplates(filteredTemplates);
+          
+          // Update stats
+          setStats({
+            total: filteredTemplates.length,
+            active: filteredTemplates.filter(t => t.status === 'active').length,
+            inactive: filteredTemplates.filter(t => t.status === 'inactive').length
+          });
+          
+          setPagination({
+            currentPage: 1,
+            totalPages: Math.ceil(filteredTemplates.length / 10),
+            totalItems: filteredTemplates.length,
+            itemsPerPage: 10
+          });
+          
+          setLoading(false);
+        }, 500);
+      } catch (error) {
+        console.error('Error fetching templates:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load templates",
+          variant: "destructive"
         });
-        
-        setPagination({
-          currentPage: 1,
-          totalPages: Math.ceil(filteredTemplates.length / 10),
-          totalItems: filteredTemplates.length,
-          itemsPerPage: 10
-        });
-        
         setLoading(false);
-      }, 500);
+      }
     };
     
     fetchTemplates();
-  }, [searchTerm]);
+  }, [searchTerm, toast]);
 
   // Handle tag selection toggle
   const toggleTag = (tagId: string) => {
@@ -191,8 +256,11 @@ const ShopifyTemplates = () => {
     });
   };
 
-  // Handler for creating a new template - would connect to an API in a real app
+  // Handler for creating a new template
   const handleCreateTemplate = () => {
+    // COMMENT: In a real app, this would be an API call to create a template
+    // Example API endpoint: POST /api/templates
+    
     // Validate form
     if (!newTemplate.name || !newTemplate.event || !newTemplate.message || !newTemplate.device) {
       toast({
@@ -203,39 +271,177 @@ const ShopifyTemplates = () => {
       return;
     }
     
-    // In a real app, this would be an API call
-    const newId = `temp-${Date.now()}`;
-    const createdTemplate: Template = {
-      id: newId,
-      name: newTemplate.name,
-      event: newTemplate.event,
-      device: newTemplate.device,
-      messageType: newTemplate.messageType,
-      message: newTemplate.message,
-      createdAt: new Date().toISOString(),
-      status: 'active',
-      tags: newTemplate.tags
-    };
-    
-    // Add to local state (in a real app, the API would return the new template)
-    setTemplates(prev => [createdTemplate, ...prev]);
-    
-    // Update stats
-    setStats(prev => ({
-      ...prev,
-      total: prev.total + 1,
-      active: prev.active + 1
-    }));
-    
-    // Reset form and close dialog
-    setNewTemplate({ name: '', event: '', device: '', messageType: '', message: '', tags: [] });
-    setIsDialogOpen(false);
-    
-    // Show success message
-    toast({
-      title: "Template Created",
-      description: "Your new template has been created successfully."
-    });
+    try {
+      // In a real app this would be:
+      // const response = await fetch('/api/templates', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(newTemplate),
+      // });
+      // const data = await response.json();
+      // if (response.ok) {
+      //   setTemplates(prev => [data, ...prev]);
+      //   setStats(prev => ({
+      //     ...prev,
+      //     total: prev.total + 1,
+      //     active: prev.active + 1
+      //   }));
+      //   setNewTemplate({ name: '', event: '', device: '', messageType: '', message: '', tags: [] });
+      //   setIsDialogOpen(false);
+      //   toast({
+      //     title: "Template Created",
+      //     description: "Your new template has been created successfully."
+      //   });
+      // } else {
+      //   throw new Error(data.message || 'Failed to create template');
+      // }
+      
+      // Mock implementation:
+      const newId = `temp-${Date.now()}`;
+      const createdTemplate: Template = {
+        id: newId,
+        name: newTemplate.name,
+        event: newTemplate.event,
+        device: newTemplate.device,
+        messageType: newTemplate.messageType,
+        message: newTemplate.message,
+        createdAt: new Date().toISOString(),
+        status: 'active',
+        tags: newTemplate.tags
+      };
+      
+      // Add to local state (in a real app, the API would return the new template)
+      setTemplates(prev => [createdTemplate, ...prev]);
+      
+      // Update stats
+      setStats(prev => ({
+        ...prev,
+        total: prev.total + 1,
+        active: prev.active + 1
+      }));
+      
+      // Reset form and close dialog
+      setNewTemplate({ name: '', event: '', device: '', messageType: '', message: '', tags: [] });
+      setIsDialogOpen(false);
+      
+      // Show success message
+      toast({
+        title: "Template Created",
+        description: "Your new template has been created successfully."
+      });
+    } catch (error) {
+      console.error('Error creating template:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create template",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle template duplication
+  const handleDuplicateTemplate = (template: Template) => {
+    // COMMENT: In a real app, this would be an API call to duplicate a template
+    // Example API endpoint: POST /api/templates/{id}/duplicate
+    try {
+      // In a real app this would be:
+      // const response = await fetch(`/api/templates/${template.id}/duplicate`, {
+      //   method: 'POST',
+      // });
+      // const data = await response.json();
+      // if (response.ok) {
+      //   setTemplates(prev => [data, ...prev]);
+      //   setStats(prev => ({
+      //     ...prev,
+      //     total: prev.total + 1,
+      //     active: prev.active + 1
+      //   }));
+      //   toast({
+      //     title: "Template Duplicated",
+      //     description: "Your template has been duplicated successfully."
+      //   });
+      // } else {
+      //   throw new Error(data.message || 'Failed to duplicate template');
+      // }
+      
+      // Mock implementation:
+      const duplicatedTemplate: Template = {
+        ...template,
+        id: `temp-${Date.now()}`,
+        name: `${template.name} (Copy)`,
+        createdAt: new Date().toISOString()
+      };
+      
+      setTemplates(prev => [duplicatedTemplate, ...prev]);
+      
+      setStats(prev => ({
+        ...prev,
+        total: prev.total + 1,
+        active: prev.active + 1
+      }));
+      
+      toast({
+        title: "Template Duplicated",
+        description: "Your template has been duplicated successfully."
+      });
+    } catch (error) {
+      console.error('Error duplicating template:', error);
+      toast({
+        title: "Error",
+        description: "Failed to duplicate template",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle template deletion
+  const handleDeleteTemplate = (id: string) => {
+    // COMMENT: In a real app, this would be an API call to delete a template
+    // Example API endpoint: DELETE /api/templates/{id}
+    try {
+      // In a real app this would be:
+      // const response = await fetch(`/api/templates/${id}`, {
+      //   method: 'DELETE',
+      // });
+      // if (response.ok) {
+      //   setTemplates(prev => prev.filter(t => t.id !== id));
+      //   setStats(prev => ({
+      //     ...prev,
+      //     total: prev.total - 1,
+      //     active: prev.active - 1
+      //   }));
+      //   toast({
+      //     title: "Template Deleted",
+      //     description: "Your template has been deleted successfully."
+      //   });
+      // } else {
+      //   const data = await response.json();
+      //   throw new Error(data.message || 'Failed to delete template');
+      // }
+      
+      // Mock implementation:
+      setTemplates(prev => prev.filter(t => t.id !== id));
+      
+      setStats(prev => ({
+        ...prev,
+        total: prev.total - 1,
+        active: prev.active - 1
+      }));
+      
+      toast({
+        title: "Template Deleted",
+        description: "Your template has been deleted successfully."
+      });
+    } catch (error) {
+      console.error('Error deleting template:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete template",
+        variant: "destructive"
+      });
+    }
   };
 
   // Format display date from ISO string
@@ -274,19 +480,14 @@ const ShopifyTemplates = () => {
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
-        {isMobile && (
-          <Button variant="ghost" size="icon" className="mr-2" onClick={toggleSidebar}>
-            <MessageSquare className="h-5 w-5" />
-          </Button>
-        )}
         <h1 className="text-2xl font-semibold">Shopify Messages</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
+            <Button className="bg-notifybot-blue hover:bg-notifybot-dark-blue">
               Create New
             </Button>
           </DialogTrigger>
-          <DialogContent className={isMobile ? "w-[95vw] max-w-none" : "sm:max-w-[800px]"}>
+          <DialogContent className="sm:max-w-[800px] w-[95vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create new shopify message</DialogTitle>
               <DialogDescription>
@@ -386,6 +587,14 @@ const ShopifyTemplates = () => {
                     <p className="text-sm text-muted-foreground mt-1">
                       Available variables: [Order No.], [User Name], [Tracking Url], [Products]
                     </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-2 text-notifybot-blue border-notifybot-blue hover:bg-notifybot-blue/10"
+                      onClick={() => window.open('/available-tags', '_blank')}
+                    >
+                      <Tag className="h-3 w-3 mr-1" /> View All Available Tags
+                    </Button>
                   </div>
                   
                   <div>
@@ -442,7 +651,7 @@ const ShopifyTemplates = () => {
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Discard</Button>
               <Button 
                 onClick={handleCreateTemplate} 
-                className="bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+                className="bg-notifybot-blue hover:bg-notifybot-dark-blue"
               >
                 Create message
               </Button>
@@ -451,7 +660,7 @@ const ShopifyTemplates = () => {
         </Dialog>
       </div>
 
-      {/* Stats Cards - Matching the design from the screenshot */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 md:p-6 shadow-sm">
           <h3 className="text-gray-600 font-medium mb-2">Total Messages</h3>
@@ -490,7 +699,7 @@ const ShopifyTemplates = () => {
           </p>
           <Button 
             onClick={() => setIsDialogOpen(true)}
-            className="bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+            className="bg-notifybot-blue hover:bg-notifybot-dark-blue"
           >
             Create New Template
           </Button>
@@ -526,7 +735,7 @@ const ShopifyTemplates = () => {
                     <td colSpan={7} className="p-4 text-center text-gray-500">No data available in table</td>
                   </tr>
                 ) : (
-                  // Map through templates from the API response
+                  // Map through templates
                   displayedTemplates.map((template) => (
                     <tr key={template.id} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="p-4 font-medium">{template.name}</td>
@@ -572,13 +781,19 @@ const ShopifyTemplates = () => {
                             <DropdownMenuItem className="cursor-pointer flex items-center">
                               <Edit className="mr-2 h-4 w-4" /> Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer flex items-center">
+                            <DropdownMenuItem 
+                              className="cursor-pointer flex items-center"
+                              onClick={() => handleDuplicateTemplate(template)}
+                            >
                               <Copy className="mr-2 h-4 w-4" /> Duplicate
                             </DropdownMenuItem>
                             <DropdownMenuItem className="cursor-pointer flex items-center">
                               <EyeIcon className="mr-2 h-4 w-4" /> Preview
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer flex items-center text-red-600">
+                            <DropdownMenuItem 
+                              className="cursor-pointer flex items-center text-red-600"
+                              onClick={() => handleDeleteTemplate(template.id)}
+                            >
                               <Trash className="mr-2 h-4 w-4" /> Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>

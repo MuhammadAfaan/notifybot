@@ -1,16 +1,21 @@
 
 import React from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import { Tag, Copy } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 // Define the tag types that would normally come from an API
-type Tag = {
+type TagData = {
   name: string;
   value: string;
 };
 
 const AvailableTags = () => {
+  const { toast } = useToast();
+  
   // In a real app, these would be fetched from an API
-  const tags: Tag[] = [
+  const tags: TagData[] = [
     { name: 'User Name', value: '[User Name]' },
     { name: 'Order Amount', value: '[Amount]' },
     { name: 'Order Number', value: '[Order No.]' },
@@ -23,6 +28,26 @@ const AvailableTags = () => {
     { name: 'Tracking Url', value: '[Tracking Url]' },
     { name: 'Shipping Company', value: '[Shipping Company]' },
   ];
+
+  // Function to copy tag to clipboard
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        toast({
+          title: "Copied!",
+          description: `${text} has been copied to clipboard`,
+        });
+      },
+      (err) => {
+        toast({
+          title: "Failed to copy",
+          description: "Please try again",
+          variant: "destructive"
+        });
+        console.error('Could not copy text: ', err);
+      }
+    );
+  };
 
   return (
     <DashboardLayout>
@@ -39,8 +64,21 @@ const AvailableTags = () => {
           <div className="space-y-4">
             {tags.map((tag) => (
               <div key={tag.name} className="flex justify-between items-center border-b border-gray-100 pb-4">
-                <div className="font-medium text-gray-700">{tag.name}</div>
-                <div className="text-gray-500">{tag.value}</div>
+                <div className="flex items-center">
+                  <Tag className="h-4 w-4 mr-2 text-notifybot-blue" />
+                  <div className="font-medium text-gray-700">{tag.name}</div>
+                </div>
+                <div className="flex items-center">
+                  <div className="text-gray-500 mr-3">{tag.value}</div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-gray-400 hover:text-notifybot-blue"
+                    onClick={() => copyToClipboard(tag.value)}
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
