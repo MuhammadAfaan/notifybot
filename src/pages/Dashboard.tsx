@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format, subDays } from 'date-fns';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -9,8 +8,8 @@ import {
   Calendar as CalendarIcon, 
   FilterIcon, 
   PlusCircle, 
-  HelpCircle, 
-  LineChart,
+  HelpCircle,
+  LineChart as LineChartIcon,
   ChevronDown
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -34,7 +33,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Sample data for the line chart with more realistic values
 const sampleAnalyticsData = [
   { date: '2025-03-28', created: 5, fulfilled: 3, canceled: 1 },
   { date: '2025-03-29', created: 8, fulfilled: 4, canceled: 0 },
@@ -45,7 +43,6 @@ const sampleAnalyticsData = [
   { date: '2025-04-03', created: 20, fulfilled: 16, canceled: 1 },
 ];
 
-// Pre-defined date ranges
 const dateRanges = [
   { label: 'Last 7 Days', startDate: subDays(new Date(), 7), endDate: new Date() },
   { label: 'Last 30 Days', startDate: subDays(new Date(), 30), endDate: new Date() },
@@ -53,37 +50,27 @@ const dateRanges = [
 ];
 
 const Dashboard = () => {
-  // State for date range and filter
   const [startDate, setStartDate] = useState<Date | undefined>(new Date('2025-03-27'));
   const [endDate, setEndDate] = useState<Date | undefined>(new Date('2025-04-03'));
   const [calendarOpen, setCalendarOpen] = useState(false);
   
-  // Function to handle preset date range selection
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setStartDate(startDate);
     setEndDate(endDate);
     setCalendarOpen(false);
     
-    // In a real app, we would make an API call here with the selected date range
     console.log('Fetching data for date range:', startDate, endDate);
   };
   
-  // Function to handle filter button click - would trigger data refresh based on filters
   const handleFilterClick = () => {
-    // In a real app, this would apply additional filters beyond date range
     console.log('Applying filters for date range:', startDate, endDate);
-    
-    // This would typically make an API request with the selected date range
-    // fetchAnalyticsData(startDate, endDate);
   };
 
-  // Format the date for display
   const formatDateString = (dateStr: string) => {
     const date = new Date(dateStr);
     return format(date, 'MMM dd');
   };
 
-  // Calculate percentage change for each metric
   const getPercentageChange = (dataKey: 'created' | 'fulfilled' | 'canceled') => {
     const currentValue = sampleAnalyticsData[sampleAnalyticsData.length - 1][dataKey];
     const previousValue = sampleAnalyticsData[sampleAnalyticsData.length - 2][dataKey];
@@ -94,7 +81,6 @@ const Dashboard = () => {
     return Math.round(percentageChange);
   };
 
-  // Custom tooltip for the chart
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -124,7 +110,6 @@ const Dashboard = () => {
           <p className="text-gray-500">Monitor your order status and device connections</p>
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          {/* Date Range Selector with Dropdown */}
           <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
             <PopoverTrigger asChild>
               <Button 
@@ -171,7 +156,6 @@ const Dashboard = () => {
             </PopoverContent>
           </Popover>
           
-          {/* Filter Button */}
           <Button 
             onClick={handleFilterClick}
             className="bg-[#3D4A2D] hover:bg-[#4E5B3E] text-white"
@@ -182,7 +166,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card>
           <CardHeader className="pb-2">
@@ -205,7 +188,7 @@ const Dashboard = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <div className="bg-green-100 p-1 rounded">
-                <LineChart size={16} className="text-green-500" />
+                <LineChartIcon size={16} className="text-green-500" />
               </div>
               Order Fulfillments
             </CardTitle>
@@ -236,7 +219,6 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Analytics Chart */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Day by Day Analytics</CardTitle>
@@ -326,7 +308,6 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Recent Orders Table */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Recent Orders</CardTitle>
