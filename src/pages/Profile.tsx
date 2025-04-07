@@ -8,13 +8,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import type { Database } from '@/integrations/supabase/types';
 
-interface Profile {
-  id: string;
-  first_name: string;
-  last_name: string;
-  phone: string;
-}
+type ProfileType = Database['public']['Tables']['profiles']['Row'];
 
 const Profile = () => {
   const [firstName, setFirstName] = useState('');
