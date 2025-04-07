@@ -1,34 +1,60 @@
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, Navigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NotifyBotLogo from "@/components/NotifyBotLogo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Login = () => {
-  // Form state would typically be managed with a form library like react-hook-form
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { toast } = useToast();
+  const { signIn, user } = useAuth();
 
-  // This would normally connect to an authentication API
-  const handleSubmit = (e: React.FormEvent) => {
+  // If user is already logged in, redirect to dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    // Simulate login request
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { error: signInError } = await signIn(email, password);
+
+      if (signInError) {
+        setError(signInError.message);
+        toast({
+          title: "Login failed",
+          description: signInError.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        });
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
       toast({
-        title: "Login successful",
-        description: "Redirecting to dashboard...",
+        title: "Login failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
-      // Redirect would happen here in a real app
-    }, 1500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,6 +67,13 @@ const Login = () => {
           <h1 className="text-2xl font-semibold text-gray-800">Log in</h1>
           <p className="text-gray-500 mt-2">or <Link to="/signup" className="text-notifybot-blue hover:underline">Create an account</Link></p>
         </div>
+
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

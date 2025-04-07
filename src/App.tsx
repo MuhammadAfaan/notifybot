@@ -21,6 +21,8 @@ import OrderCredits from "./pages/OrderCredits";
 import HelpSupport from "./pages/HelpSupport";
 import ForgotPassword from "./pages/ForgotPassword";
 import AvailableTags from "./pages/AvailableTags";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -28,40 +30,42 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
       <BrowserRouter>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          
-          {/* Protected routes - In a real app, these would be protected by auth */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/devices" element={<MyDevices />} />
-          <Route path="/devices/new" element={<NewDevice />} />
-          <Route path="/devices/:id" element={<DeviceDetail />} />
-          <Route path="/shopify-templates" element={<ShopifyTemplates />} />
-          <Route path="/available-tags" element={<AvailableTags />} />
-          <Route path="/contact-book" element={<ContactBook />} />
-          <Route path="/message-log" element={<MessageLog />} />
-          <Route path="/guide" element={<UserGuide />} />
-          <Route path="/credits" element={<OrderCredits />} />
-          <Route path="/support" element={<HelpSupport />} />
-          <Route path="/purchase-credits" element={<Navigate to="/credits" />} />
-          
-          {/* Redirects for old URLs to new URLs */}
-          <Route path="/couriers" element={<Navigate to="/dashboard" />} />
-          <Route path="/courier-templates" element={<Navigate to="/dashboard" />} />
-          <Route path="/contacts" element={<Navigate to="/contact-book" />} />
-          <Route path="/messages" element={<Navigate to="/message-log" />} />
-          
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            
+            {/* Protected routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/devices" element={<ProtectedRoute><MyDevices /></ProtectedRoute>} />
+            <Route path="/devices/new" element={<ProtectedRoute><NewDevice /></ProtectedRoute>} />
+            <Route path="/devices/:id" element={<ProtectedRoute><DeviceDetail /></ProtectedRoute>} />
+            <Route path="/shopify-templates" element={<ProtectedRoute><ShopifyTemplates /></ProtectedRoute>} />
+            <Route path="/available-tags" element={<ProtectedRoute><AvailableTags /></ProtectedRoute>} />
+            <Route path="/contact-book" element={<ProtectedRoute><ContactBook /></ProtectedRoute>} />
+            <Route path="/message-log" element={<ProtectedRoute><MessageLog /></ProtectedRoute>} />
+            <Route path="/guide" element={<ProtectedRoute><UserGuide /></ProtectedRoute>} />
+            <Route path="/credits" element={<ProtectedRoute><OrderCredits /></ProtectedRoute>} />
+            <Route path="/support" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
+            <Route path="/purchase-credits" element={<Navigate to="/credits" />} />
+            
+            {/* Redirects for old URLs to new URLs */}
+            <Route path="/couriers" element={<Navigate to="/dashboard" />} />
+            <Route path="/courier-templates" element={<Navigate to="/dashboard" />} />
+            <Route path="/contacts" element={<Navigate to="/contact-book" />} />
+            <Route path="/messages" element={<Navigate to="/message-log" />} />
+            
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

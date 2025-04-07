@@ -1,32 +1,59 @@
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NotifyBotLogo from "@/components/NotifyBotLogo";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
   const { toast } = useToast();
+  const { resetPassword, user } = useAuth();
 
-  // This function would normally connect to an API to send a password reset email
-  const handleSubmit = (e: React.FormEvent) => {
+  // If user is already logged in, redirect to dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    // Simulate API request to send password reset email
-    setTimeout(() => {
-      setLoading(false);
-      setSent(true);
+    try {
+      const { error: resetError } = await resetPassword(email);
+
+      if (resetError) {
+        setError(resetError.message);
+        toast({
+          title: "Password reset failed",
+          description: resetError.message,
+          variant: "destructive",
+        });
+      } else {
+        setSent(true);
+        toast({
+          title: "Reset link sent",
+          description: "Please check your email for further instructions.",
+        });
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
       toast({
-        title: "Reset link sent",
-        description: "Please check your email for further instructions.",
+        title: "Password reset failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
-    }, 1500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,6 +77,13 @@ const ForgotPassword = () => {
             </>
           )}
         </div>
+
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         {sent ? (
           <div className="space-y-4">

@@ -1,11 +1,14 @@
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NotifyBotLogo from "@/components/NotifyBotLogo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -16,11 +19,22 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { toast } = useToast();
+  const { signUp, user } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // If user is already logged in, redirect to dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
+    // Form validation
     if (password !== confirmPassword) {
+      setError("Passwords don't match");
       toast({
         title: "Passwords don't match",
         description: "Please make sure your passwords match.",
@@ -30,6 +44,7 @@ const Signup = () => {
     }
 
     if (!acceptTerms) {
+      setError("You must accept the terms and privacy policy");
       toast({
         title: "Terms Required",
         description: "Please accept the terms and privacy policy.",
@@ -40,15 +55,38 @@ const Signup = () => {
 
     setLoading(true);
 
-    // Simulate signup request
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const userData = {
+        firstName,
+        lastName,
+        phone,
+      };
+
+      const { error: signUpError } = await signUp(email, password, userData);
+
+      if (signUpError) {
+        setError(signUpError.message);
+        toast({
+          title: "Registration failed",
+          description: signUpError.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Registration successful",
+          description: "Your account has been created!",
+        });
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
       toast({
-        title: "Registration successful",
-        description: "Redirecting to login page...",
+        title: "Registration failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
-      // Redirect would happen here in a real app
-    }, 1500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,6 +101,13 @@ const Signup = () => {
             Have an account? <Link to="/login" className="text-notifybot-blue hover:underline">Login</Link>
           </p>
         </div>
+
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
