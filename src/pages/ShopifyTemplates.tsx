@@ -3,22 +3,16 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { 
-  Search, 
   Edit, 
   Trash, 
   Copy, 
-  ChevronLeft, 
-  ChevronRight,
   MoreHorizontal,
-  FileSearch,
   Tag,
   MessageSquare,
   Smartphone,
   EyeIcon,
-  Plus,
-  Clock
+  Plus
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { 
   DropdownMenu,
@@ -44,7 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from '@/components/ui/input';
 
 // Types that would normally be defined in a separate types file
 type Template = {
@@ -110,72 +104,6 @@ const AvailableTagsTable = () => {
   );
 };
 
-// Template card component
-const TemplateCard = ({ template, onEdit, onDuplicate, onDelete }) => {
-  return (
-    <Card className="overflow-hidden">
-      <CardHeader className="p-4 pb-3 border-b bg-gray-50">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-medium truncate">{template.name}</CardTitle>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="cursor-pointer flex items-center" onClick={() => onEdit(template)}>
-                <Edit className="mr-2 h-4 w-4" /> Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                className="cursor-pointer flex items-center"
-                onClick={() => onDuplicate(template)}
-              >
-                <Copy className="mr-2 h-4 w-4" /> Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                className="cursor-pointer flex items-center text-red-600"
-                onClick={() => onDelete(template.id)}
-              >
-                <Trash className="mr-2 h-4 w-4" /> Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        <div className="space-y-3">
-          <div className="flex items-center space-x-2">
-            <Smartphone className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">Device: {template.device}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Tag className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">Event: {template.event}</span>
-          </div>
-          <div className="flex items-start space-x-2">
-            <MessageSquare className="h-4 w-4 text-gray-500 mt-0.5" />
-            <span className="text-sm text-gray-600 line-clamp-3">{template.message}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Clock className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-400">Created: {new Date(template.createdAt).toLocaleDateString()}</span>
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className="p-2 bg-gray-50 flex justify-end space-x-2">
-        <Button size="sm" variant="outline" onClick={() => onEdit(template)}>
-          <Edit className="h-3.5 w-3.5 mr-1" /> Edit
-        </Button>
-        <Button size="sm" variant="default" onClick={() => onDuplicate(template)}>
-          <Copy className="h-3.5 w-3.5 mr-1" /> Duplicate
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-};
-
 // Success Toast Actions component
 const TemplateCreatedActions = ({ onView, onEdit, onCreateAnother }) => {
   return (
@@ -214,7 +142,6 @@ const ShopifyTemplates = () => {
   // State for template data
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   
   // Mock data for devices
   const [devices, setDevices] = useState<Device[]>([
@@ -228,14 +155,6 @@ const ShopifyTemplates = () => {
     total: 0,
     active: 0,
     inactive: 0
-  });
-  
-  // State for pagination
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    itemsPerPage: 10
   });
   
   // State for new template form
@@ -268,19 +187,12 @@ const ShopifyTemplates = () => {
           inactive: 0
         });
         
-        setPagination({
-          currentPage: 1,
-          totalPages: 1,
-          totalItems: 0,
-          itemsPerPage: 6
-        });
-        
         setLoading(false);
       }, 500);
     };
     
     fetchTemplates();
-  }, [searchTerm]);
+  }, []);
 
   // Handler for creating a new template
   const handleCreateTemplate = () => {
@@ -414,11 +326,6 @@ const ShopifyTemplates = () => {
       default: return eventKey;
     }
   };
-
-  // Calculate pagination indexes
-  const startIndex = (pagination.currentPage - 1) * pagination.itemsPerPage;
-  const endIndex = Math.min(startIndex + pagination.itemsPerPage, pagination.totalItems);
-  const displayedTemplates = templates.slice(startIndex, endIndex);
 
   return (
     <DashboardLayout>
@@ -583,27 +490,9 @@ const ShopifyTemplates = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-          <Input 
-            className="pl-10" 
-            placeholder="Search templates..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-
       {templates.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm p-6 md:p-12 text-center">
-          <div className="flex justify-center mb-4">
-            <FileSearch className="h-12 w-12 md:h-16 md:w-16 text-gray-300" />
-          </div>
-          <h3 className="text-xl font-medium text-gray-700 mb-2">Oops, there is no shopify message found....</h3>
-          <p className="text-gray-500 max-w-md mx-auto mb-6">
-            Create your first Shopify message template to get started with automated messaging.
-          </p>
+        <div className="p-8 text-center">
+          <h3 className="text-xl font-medium text-gray-700 mb-4">No Shopify messages found</h3>
           <Button 
             onClick={() => setIsDialogOpen(true)}
             className="bg-notifybot-blue hover:bg-notifybot-dark-blue"
@@ -612,68 +501,57 @@ const ShopifyTemplates = () => {
           </Button>
         </div>
       ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            {displayedTemplates.map((template) => (
-              <TemplateCard 
-                key={template.id}
-                template={{
-                  ...template,
-                  event: formatEventName(template.event)
-                }}
-                onEdit={() => handleEditTemplate(template)} 
-                onDuplicate={() => handleDuplicateTemplate(template)}
-                onDelete={() => handleDeleteTemplate(template.id)}
-              />
-            ))}
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
-            <div>
-              Showing {pagination.totalItems === 0 ? 0 : startIndex + 1} to {endIndex} of {pagination.totalItems} entries
+        <div className="grid grid-cols-1 gap-4">
+          {templates.map((template) => (
+            <div key={template.id} className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex justify-between items-start">
+                <h2 className="text-lg font-medium">{template.name}</h2>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="text-gray-500 hover:text-gray-700">
+                      <MoreHorizontal size={20} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleEditTemplate(template)} className="cursor-pointer">
+                      <Edit className="mr-2 h-4 w-4" /> Edit Message
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDuplicateTemplate(template)} className="cursor-pointer">
+                      <Copy className="mr-2 h-4 w-4" /> Copy Webhook Link
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDeleteTemplate(template.id)} className="text-red-500 cursor-pointer">
+                      <Trash className="mr-2 h-4 w-4" /> Remove
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              
+              <div className="mt-4 space-y-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-500">Message:</label>
+                  <p className="text-gray-700">{template.message}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-500">Total Sent:</label>
+                  <p className="text-gray-700">0</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-500">Device Name:</label>
+                  <p className="text-gray-700">{template.device}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-500">Status:</label>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-800">
+                    ACTIVE
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="flex space-x-1">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-8 w-8 p-0"
-                disabled={pagination.currentPage === 1}
-              >
-                «
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-8 w-8 p-0"
-                disabled={pagination.currentPage === 1}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button 
-                size="sm" 
-                className="h-8 w-8 p-0 bg-notifybot-blue text-white hover:bg-notifybot-blue/90"
-              >
-                {pagination.currentPage}
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-8 w-8 p-0"
-                disabled={pagination.currentPage === pagination.totalPages}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-8 w-8 p-0"
-                disabled={pagination.currentPage === pagination.totalPages}
-              >
-                »
-              </Button>
-            </div>
-          </div>
-        </>
+          ))}
+        </div>
       )}
     </DashboardLayout>
   );
