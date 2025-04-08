@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { format, subDays } from 'date-fns';
+import React, { useState, useEffect } from 'react';
+import { format, subDays, addDays, parse, startOfMonth, endOfMonth, isWithinInterval, isSameDay } from 'date-fns';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { 
-  Line, 
   LineChart, 
   XAxis, 
   YAxis, 
@@ -32,38 +31,67 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
-const sampleAnalyticsData = [
-  { date: '2025-03-28', created: 5, fulfilled: 3, canceled: 1 },
-  { date: '2025-03-29', created: 8, fulfilled: 4, canceled: 0 },
-  { date: '2025-03-30', created: 12, fulfilled: 9, canceled: 2 },
-  { date: '2025-03-31', created: 10, fulfilled: 7, canceled: 1 },
-  { date: '2025-04-01', created: 15, fulfilled: 12, canceled: 3 },
-  { date: '2025-04-02', created: 18, fulfilled: 15, canceled: 2 },
-  { date: '2025-04-03', created: 20, fulfilled: 16, canceled: 1 },
-];
-
-const dateRanges = [
-  { label: 'Last 7 Days', startDate: subDays(new Date(), 7), endDate: new Date() },
-  { label: 'Last 30 Days', startDate: subDays(new Date(), 30), endDate: new Date() },
-  { label: 'This Month', startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1), endDate: new Date() }
-];
+const generateDataForDateRange = (startDate: Date, endDate: Date) => {
+  let currentDate = new Date(startDate);
+  const data = [];
+  
+  while (currentDate <= endDate) {
+    const dateKey = currentDate.getTime();
+    const created = 5 + Math.floor((dateKey % 17) / 3) + Math.floor(dateKey % 11);
+    const fulfilled = Math.max(2, Math.floor(created * 0.7));
+    const canceled = Math.max(0, Math.floor(created * 0.15));
+    
+    data.push({
+      date: format(currentDate, 'yyyy-MM-dd'),
+      created,
+      fulfilled,
+      canceled
+    });
+    
+    currentDate = addDays(currentDate, 1);
+  }
+  
+  return data;
+};
 
 const Dashboard = () => {
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date('2025-03-27'));
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date('2025-04-03'));
+  const [startDate, setStartDate] = useState<Date | undefined>(subDays(new Date(), 7));
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState<any[]>([]);
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    if (startDate && endDate) {
+      const newData = generateDataForDateRange(startDate, endDate);
+      setAnalyticsData(newData);
+    }
+  }, [startDate, endDate]);
+  
+  const dateRanges = [
+    { label: 'Last 7 Days', startDate: subDays(new Date(), 7), endDate: new Date() },
+    { label: 'Last 30 Days', startDate: subDays(new Date(), 30), endDate: new Date() },
+    { label: 'This Month', startDate: startOfMonth(new Date()), endDate: new Date() }
+  ];
   
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setStartDate(startDate);
     setEndDate(endDate);
-    setCalendarOpen(false);
     
-    console.log('Fetching data for date range:', startDate, endDate);
+    toast({
+      title: "Date range selected",
+      description: `${format(startDate, 'PPP')} to ${format(endDate, 'PPP')}`,
+    });
   };
   
   const handleFilterClick = () => {
-    console.log('Applying filters for date range:', startDate, endDate);
+    setCalendarOpen(false);
+    toast({
+      title: "Filters applied",
+      description: `Data filtered from ${startDate ? format(startDate, 'MMMM d, yyyy') : 'start'} to ${endDate ? format(endDate, 'MMMM d, yyyy') : 'end'}`,
+    });
   };
 
   const formatDateString = (dateStr: string) => {
@@ -72,8 +100,10 @@ const Dashboard = () => {
   };
 
   const getPercentageChange = (dataKey: 'created' | 'fulfilled' | 'canceled') => {
-    const currentValue = sampleAnalyticsData[sampleAnalyticsData.length - 1][dataKey];
-    const previousValue = sampleAnalyticsData[sampleAnalyticsData.length - 2][dataKey];
+    if (analyticsData.length < 2) return 0;
+    
+    const currentValue = analyticsData[analyticsData.length - 1][dataKey];
+    const previousValue = analyticsData[analyticsData.length - 2][dataKey];
     
     if (previousValue === 0) return currentValue > 0 ? 100 : 0;
     
@@ -148,11 +178,14 @@ const Dashboard = () => {
                 onSelect={(range) => {
                   if (range?.from) setStartDate(range.from);
                   if (range?.to) setEndDate(range.to);
-                  if (range?.to) setCalendarOpen(false);
                 }}
                 numberOfMonths={1}
-                className="p-3 pointer-events-auto"
               />
+              <div className="flex justify-end p-2 border-t border-gray-200">
+                <Button size="sm" onClick={handleFilterClick}>
+                  Apply Range
+                </Button>
+              </div>
             </PopoverContent>
           </Popover>
           
@@ -177,7 +210,9 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{sampleAnalyticsData[sampleAnalyticsData.length - 1].created}</div>
+            <div className="text-3xl font-bold">
+              {analyticsData.length > 0 ? analyticsData[analyticsData.length - 1].created : 0}
+            </div>
             <div className={`text-xs ${getPercentageChange('created') >= 0 ? 'text-green-500' : 'text-red-500'}`}>
               {getPercentageChange('created') >= 0 ? '+' : ''}{getPercentageChange('created')}%
             </div>
@@ -194,7 +229,9 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{sampleAnalyticsData[sampleAnalyticsData.length - 1].fulfilled}</div>
+            <div className="text-3xl font-bold">
+              {analyticsData.length > 0 ? analyticsData[analyticsData.length - 1].fulfilled : 0}
+            </div>
             <div className={`text-xs ${getPercentageChange('fulfilled') >= 0 ? 'text-green-500' : 'text-red-500'}`}>
               {getPercentageChange('fulfilled') >= 0 ? '+' : ''}{getPercentageChange('fulfilled')}%
             </div>
@@ -211,7 +248,9 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{sampleAnalyticsData[sampleAnalyticsData.length - 1].canceled}</div>
+            <div className="text-3xl font-bold">
+              {analyticsData.length > 0 ? analyticsData[analyticsData.length - 1].canceled : 0}
+            </div>
             <div className={`text-xs ${getPercentageChange('canceled') <= 0 ? 'text-green-500' : 'text-red-500'}`}>
               {getPercentageChange('canceled') >= 0 ? '+' : ''}{getPercentageChange('canceled')}%
             </div>
@@ -224,11 +263,11 @@ const Dashboard = () => {
           <CardTitle>Day by Day Analytics</CardTitle>
         </CardHeader>
         <CardContent>
-          {sampleAnalyticsData.length > 0 ? (
+          {analyticsData.length > 0 ? (
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
-                  data={sampleAnalyticsData.map(item => ({
+                  data={analyticsData.map(item => ({
                     ...item,
                     date: formatDateString(item.date)
                   }))}

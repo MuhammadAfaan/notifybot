@@ -1,17 +1,34 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
+import InvoiceModal from '@/components/InvoiceModal';
 
 const OrderCredits = () => {
+  const [selectedInvoice, setSelectedInvoice] = useState<{
+    invoiceNo: string;
+    credits: number;
+    totalPaid: string;
+  } | null>(null);
+
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+
+  const handleViewInvoice = (invoiceNo: string, credits: number, totalPaid: string) => {
+    setSelectedInvoice({ invoiceNo, credits, totalPaid });
+    setIsInvoiceModalOpen(true);
+  };
+
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Credits</h1>
-        <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
-          Purchase
-        </Button>
+        <Link to="/purchase-credits">
+          <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
+            Purchase
+          </Button>
+        </Link>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6 mb-6 relative overflow-hidden">
@@ -44,7 +61,30 @@ const OrderCredits = () => {
                   <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Pending</span>
                 </td>
                 <td className="p-4">
-                  <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => handleViewInvoice('gDelTi', 1000, 'PKR 5,500')}
+                  >
+                    <Eye size={16} />
+                  </Button>
+                </td>
+              </tr>
+              <tr className="border-b border-gray-100">
+                <td className="p-4">xRt7Yl</td>
+                <td className="p-4">500</td>
+                <td className="p-4">PKR 3,000</td>
+                <td className="p-4">
+                  <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Completed</span>
+                </td>
+                <td className="p-4">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => handleViewInvoice('xRt7Yl', 500, 'PKR 3,000')}
+                  >
                     <Eye size={16} />
                   </Button>
                 </td>
@@ -53,7 +93,7 @@ const OrderCredits = () => {
           </table>
         </div>
         <div className="p-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
-          <div>Showing 1 to 1 of 1 entry</div>
+          <div>Showing 1 to 2 of 2 entries</div>
           <div className="flex space-x-1">
             <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">«</Button>
             <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">‹</Button>
@@ -63,6 +103,16 @@ const OrderCredits = () => {
           </div>
         </div>
       </div>
+
+      {selectedInvoice && (
+        <InvoiceModal
+          invoiceNo={selectedInvoice.invoiceNo}
+          credits={selectedInvoice.credits}
+          totalPaid={selectedInvoice.totalPaid}
+          isOpen={isInvoiceModalOpen}
+          onClose={() => setIsInvoiceModalOpen(false)}
+        />
+      )}
     </DashboardLayout>
   );
 };

@@ -21,6 +21,7 @@ import OrderCredits from "./pages/OrderCredits";
 import HelpSupport from "./pages/HelpSupport";
 import ForgotPassword from "./pages/ForgotPassword";
 import AvailableTags from "./pages/AvailableTags";
+import PricingPage from "./pages/PricingPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -54,7 +55,7 @@ const App = () => (
             <Route path="/guide" element={<ProtectedRoute><UserGuide /></ProtectedRoute>} />
             <Route path="/credits" element={<ProtectedRoute><OrderCredits /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
-            <Route path="/purchase-credits" element={<Navigate to="/credits" />} />
+            <Route path="/purchase-credits" element={<ProtectedRoute><PricingPage /></ProtectedRoute>} />
             
             {/* Redirects for old URLs to new URLs */}
             <Route path="/couriers" element={<Navigate to="/dashboard" />} />

@@ -3,7 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Smartphone } from 'lucide-react';
+import { MoreHorizontal, Smartphone, QrCode, Edit, Trash } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // This would typically be defined in a types.ts file
 type Device = {
@@ -18,6 +25,7 @@ const MyDevices = () => {
   // State to store devices data that would be fetched from an API
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   // Summary statistics that would be calculated from the devices data
   const [stats, setStats] = useState({
@@ -35,7 +43,14 @@ const MyDevices = () => {
         const mockDevices: Device[] = [
           {
             id: '1',
-            name: 'Iphone',
+            name: 'nbdfsn',
+            phone: '',
+            totalMessages: 0,
+            status: 'INACTIVE'
+          },
+          {
+            id: '2',
+            name: 'hjjd',
             phone: '',
             totalMessages: 0,
             status: 'INACTIVE'
@@ -57,6 +72,28 @@ const MyDevices = () => {
 
     fetchDevices();
   }, []);
+
+  const handleScanQR = (deviceName: string) => {
+    toast({
+      title: "QR Code Scanner",
+      description: `Opening QR scanner for device: ${deviceName}`,
+    });
+  };
+
+  const handleEditDevice = (deviceName: string) => {
+    toast({
+      title: "Edit Device",
+      description: `Editing device: ${deviceName}`,
+    });
+  };
+
+  const handleRemoveDevice = (deviceName: string) => {
+    toast({
+      title: "Remove Device",
+      description: `Removing device: ${deviceName}. Please confirm this action.`,
+      variant: "destructive",
+    });
+  };
 
   return (
     <DashboardLayout>
@@ -96,7 +133,7 @@ const MyDevices = () => {
         </div>
       </div>
 
-      {/* Devices list - dynamically loaded from API */}
+      {/* Devices grid - dynamically loaded from API */}
       {loading ? (
         <div className="bg-white rounded-lg shadow-sm p-6 text-center">
           <p className="text-gray-500">Loading devices...</p>
@@ -106,40 +143,57 @@ const MyDevices = () => {
           <p className="text-gray-500">No devices found. Create your first device!</p>
         </div>
       ) : (
-        // Map through devices from the API response
-        devices.map(device => (
-          <div key={device.id} className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex justify-between mb-4">
-              <h2 className="text-lg font-medium">{device.name}</h2>
-              <button className="text-gray-500 hover:text-gray-700">
-                <MoreHorizontal size={20} />
-              </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Map through devices from the API response */}
+          {devices.map(device => (
+            <div key={device.id} className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex justify-between mb-4">
+                <h2 className="text-lg font-medium">{device.name}</h2>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full p-1">
+                      <MoreHorizontal size={20} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={() => handleScanQR(device.name)} className="cursor-pointer">
+                      <QrCode className="mr-2 h-4 w-4" /> Scan QR
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEditDevice(device.name)} className="cursor-pointer">
+                      <Edit className="mr-2 h-4 w-4" /> Edit Device Name
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleRemoveDevice(device.name)} className="text-red-500 cursor-pointer hover:text-red-600 hover:bg-red-50">
+                      <Trash className="mr-2 h-4 w-4" /> Remove
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between text-gray-600">
+                  <span>Phone:</span>
+                  <span>{device.phone || 'Not set'}</span>
+                </div>
+
+                <div className="flex justify-between text-gray-600">
+                  <span>Total Messages:</span>
+                  <span>{device.totalMessages}</span>
+                </div>
+
+                <div className="flex justify-between text-gray-600">
+                  <span>Status:</span>
+                  <span className={`px-2 py-0.5 rounded-md text-sm ${
+                    device.status === 'ACTIVE' 
+                      ? 'bg-green-100 text-green-600' 
+                      : 'bg-red-100 text-red-600'
+                  }`}>
+                    {device.status}
+                  </span>
+                </div>
+              </div>
             </div>
-
-            <div className="space-y-3">
-              <div className="flex justify-between text-gray-600">
-                <span>Phone:</span>
-                <span>{device.phone}</span>
-              </div>
-
-              <div className="flex justify-between text-gray-600">
-                <span>Total Messages:</span>
-                <span>{device.totalMessages}</span>
-              </div>
-
-              <div className="flex justify-between text-gray-600">
-                <span>Status:</span>
-                <span className={`px-2 py-0.5 rounded-md text-sm ${
-                  device.status === 'ACTIVE' 
-                    ? 'bg-green-100 text-green-600' 
-                    : 'bg-red-100 text-red-600'
-                }`}>
-                  {device.status}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </DashboardLayout>
   );
