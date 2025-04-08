@@ -79,6 +79,7 @@ const InvoiceModal = ({ invoiceNo, credits, totalPaid, isOpen, onClose }: Invoic
       toast({
         title: "No file selected",
         description: "Please upload a payment receipt",
+        variant: "default",
       });
     }
   };
