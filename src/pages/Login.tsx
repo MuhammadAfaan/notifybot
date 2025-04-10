@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,7 @@ const Login = () => {
           title: "Login successful",
           description: "Welcome back!",
         });
+        // Navigate to dashboard is handled in the signIn function
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
@@ -59,12 +60,12 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-notifybot-bg p-4">
-      <div className="bg-white rounded-lg shadow-sm max-w-md w-full p-8 animate-fade-in">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
+      <div className="bg-white rounded-lg shadow-sm max-w-md w-full p-6 sm:p-8 animate-fade-in">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex justify-center mb-4 sm:mb-6">
             <NotifyBotLogo />
           </div>
-          <h1 className="text-2xl font-semibold text-gray-800">Log in</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">Log in</h1>
           <p className="text-gray-500 mt-2">or <Link to="/signup" className="text-notifybot-blue hover:underline">Create an account</Link></p>
         </div>
 
