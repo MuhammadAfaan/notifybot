@@ -20,7 +20,6 @@ import UserGuide from "./pages/UserGuide";
 import OrderCredits from "./pages/OrderCredits";
 import HelpSupport from "./pages/HelpSupport";
 import ForgotPassword from "./pages/ForgotPassword";
-import AvailableTags from "./pages/AvailableTags";
 import PricingPage from "./pages/PricingPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -42,20 +41,19 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             
-            {/* Protected routes */}
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/devices" element={<ProtectedRoute><MyDevices /></ProtectedRoute>} />
-            <Route path="/devices/new" element={<ProtectedRoute><NewDevice /></ProtectedRoute>} />
-            <Route path="/devices/:id" element={<ProtectedRoute><DeviceDetail /></ProtectedRoute>} />
-            <Route path="/shopify-templates" element={<ProtectedRoute><ShopifyTemplates /></ProtectedRoute>} />
-            <Route path="/available-tags" element={<ProtectedRoute><AvailableTags /></ProtectedRoute>} />
-            <Route path="/contact-book" element={<ProtectedRoute><ContactBook /></ProtectedRoute>} />
-            <Route path="/message-log" element={<ProtectedRoute><MessageLog /></ProtectedRoute>} />
-            <Route path="/guide" element={<ProtectedRoute><UserGuide /></ProtectedRoute>} />
-            <Route path="/credits" element={<ProtectedRoute><OrderCredits /></ProtectedRoute>} />
-            <Route path="/support" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
-            <Route path="/purchase-credits" element={<ProtectedRoute><PricingPage /></ProtectedRoute>} />
+            {/* Protected routes - but we're not actually checking auth status now */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/devices" element={<MyDevices />} />
+            <Route path="/devices/new" element={<NewDevice />} />
+            <Route path="/devices/:id" element={<DeviceDetail />} />
+            <Route path="/shopify-templates" element={<ShopifyTemplates />} />
+            <Route path="/contact-book" element={<ContactBook />} />
+            <Route path="/message-log" element={<MessageLog />} />
+            <Route path="/guide" element={<UserGuide />} />
+            <Route path="/credits" element={<OrderCredits />} />
+            <Route path="/support" element={<HelpSupport />} />
+            <Route path="/purchase-credits" element={<PricingPage />} />
             
             {/* Redirects for old URLs to new URLs */}
             <Route path="/couriers" element={<Navigate to="/dashboard" />} />

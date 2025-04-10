@@ -76,6 +76,7 @@ const Signup = () => {
           title: "Registration successful",
           description: "Your account has been created!",
         });
+        // Navigation to dashboard is handled in the signUp function
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
@@ -91,12 +92,12 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-notifybot-bg p-4">
-      <div className="bg-white rounded-lg shadow-sm max-w-md w-full p-8 animate-fade-in">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
+      <div className="bg-white rounded-lg shadow-sm max-w-md w-full p-6 sm:p-8 animate-fade-in">
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-4 sm:mb-6">
             <NotifyBotLogo />
           </div>
-          <h1 className="text-2xl font-semibold text-gray-800">Register</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">Register</h1>
           <p className="text-gray-500 mt-2">
             Have an account? <Link to="/login" className="text-notifybot-blue hover:underline">Login</Link>
           </p>
@@ -110,7 +111,7 @@ const Signup = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Input 
                 type="text" 
@@ -151,7 +152,7 @@ const Signup = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Input 
                 type="password" 
