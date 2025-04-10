@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Input } from '@/components/ui/input';
@@ -8,9 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import type { Database } from '@/integrations/supabase/types';
 
-type ProfileType = Database['public']['Tables']['profiles']['Row'];
+type ProfileType = any;
 
 const Profile = () => {
   const [firstName, setFirstName] = useState('');
@@ -37,11 +35,13 @@ const Profile = () => {
     try {
       if (!user) return;
 
-      const { data, error } = await supabase
+      const response = await supabase
         .from('profiles')
         .select('first_name, last_name, phone')
         .eq('id', user.id)
         .single();
+
+      const { data, error } = response;
 
       if (error) {
         throw error;
@@ -72,15 +72,17 @@ const Profile = () => {
     try {
       if (!user) return;
 
-      const { error } = await supabase
+      const response = await supabase
         .from('profiles')
         .update({
           first_name: firstName,
           last_name: lastName,
           phone: phone,
-          updated_at: new Date().toISOString(), // Convert Date to ISO string
+          updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
+
+      const { error } = response;
 
       if (error) {
         throw error;
