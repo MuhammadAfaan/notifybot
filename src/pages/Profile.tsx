@@ -4,65 +4,26 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-type ProfileType = any;
-
 const Profile = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [firstName, setFirstName] = useState('John');
+  const [lastName, setLastName] = useState('Doe');
+  const [email, setEmail] = useState('user@example.com');
+  const [phone, setPhone] = useState('+1234567890');
+  const [address, setAddress] = useState('123 Main St');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
   const [error, setError] = useState('');
   const { toast } = useToast();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
-      setEmail(user.email || '');
-      fetchProfile();
-    }
+    setProfileLoading(false);
   }, [user]);
-
-  const fetchProfile = async () => {
-    try {
-      if (!user) return;
-
-      const response = await supabase
-        .from('profiles')
-        .select('first_name, last_name, phone')
-        .eq('id', user.id)
-        .single();
-
-      const { data, error } = response;
-
-      if (error) {
-        throw error;
-      }
-
-      if (data) {
-        setFirstName(data.first_name || '');
-        setLastName(data.last_name || '');
-        setPhone(data.phone || '');
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      toast({
-        title: "Error fetching profile",
-        description: "Could not load your profile information.",
-        variant: "destructive",
-      });
-    } finally {
-      setProfileLoading(false);
-    }
-  };
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,33 +31,24 @@ const Profile = () => {
     setError('');
 
     try {
-      if (!user) return;
-
-      const response = await supabase
-        .from('profiles')
-        .update({
-          first_name: firstName,
-          last_name: lastName,
-          phone: phone,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id);
-
-      const { error } = response;
-
-      if (error) {
-        throw error;
-      }
-
+      console.log('Mock profile update', {
+        firstName,
+        lastName,
+        phone,
+        address
+      });
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully",
       });
     } catch (error: any) {
-      setError(error.message);
+      setError('An error occurred while updating your profile');
       toast({
         title: "Update failed",
-        description: error.message,
+        description: 'An error occurred while updating your profile',
         variant: "destructive",
       });
     } finally {
@@ -121,14 +73,10 @@ const Profile = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({ 
-        password: newPassword 
-      });
-
-      if (error) {
-        throw error;
-      }
-
+      console.log('Mock password update');
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       setNewPassword('');
       setConfirmPassword('');
       toast({
@@ -136,10 +84,10 @@ const Profile = () => {
         description: "Your password has been updated successfully",
       });
     } catch (error: any) {
-      setError(error.message);
+      setError('An error occurred while updating your password');
       toast({
         title: "Update failed",
-        description: error.message,
+        description: 'An error occurred while updating your password',
         variant: "destructive",
       });
     } finally {

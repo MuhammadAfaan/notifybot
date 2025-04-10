@@ -1,8 +1,16 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import React, { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Simple mock types to replace Supabase types
+interface User {
+  id: string;
+  email: string;
+}
+
+interface Session {
+  user: User;
+}
 
 interface AuthContextType {
   session: Session | null;
@@ -24,78 +32,41 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Create a mock user for demonstration purposes
+  const mockUser: User = { id: 'mock-user-id', email: 'user@example.com' };
+  const mockSession: Session = { user: mockUser };
+  
+  // Set default state with mock user (always logged in for UI demonstration)
+  const [user] = useState<User | null>(mockUser);
+  const [session] = useState<Session | null>(mockSession);
+  const [loading] = useState(false);
+  
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event: any, currentSession: Session | null) => {
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        
-        // If the event is SIGNED_OUT, navigate to login
-        if (event === 'SIGNED_OUT') {
-          navigate('/login');
-        }
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (!error) {
-      navigate('/dashboard');
-    }
-
-    return { error };
+    // API CALL: This would authenticate the user in a real app
+    console.log(`Mock sign in with email: ${email}`);
+    navigate('/dashboard');
+    return { error: null };
   };
 
   const signUp = async (email: string, password: string, userData: any) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          first_name: userData.firstName,
-          last_name: userData.lastName,
-          phone: userData.phone,
-        }
-      }
-    });
-
-    if (!error) {
-      navigate('/dashboard');
-    }
-
-    return { data, error };
+    // API CALL: This would register a new user in a real app
+    console.log(`Mock sign up with email: ${email}`, userData);
+    navigate('/dashboard');
+    return { data: { user: mockUser }, error: null };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    // API CALL: This would sign out the user in a real app
+    console.log('Mock sign out');
+    navigate('/login');
   };
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/login',
-    });
-    
-    return { error };
+    // API CALL: This would trigger password reset in a real app
+    console.log(`Mock password reset for: ${email}`);
+    return { error: null };
   };
 
   return (

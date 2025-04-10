@@ -1,69 +1,94 @@
 
-// This file provides a mock Supabase client for frontend development
-// In a production app, you would use the actual Supabase client
+// This is a placeholder file for API integration
+// In a real application, this would connect to your backend service
 
-const createMockClient = () => {
-  return {
-    from: (table: string) => ({
-      select: (columns?: string) => ({
-        eq: (column: string, value: any) => ({
-          single: () => Promise.resolve({ data: null, error: null }),
-          data: [],
-          error: null
-        }),
-        data: [],
-        error: null
-      }),
-      insert: (data: any) => Promise.resolve({ data: null, error: null }),
-      update: (data: any) => ({
-        eq: (column: string, value: any) => Promise.resolve({ data: null, error: null }),
-        data: null, 
-        error: null
-      }),
-      delete: () => ({
-        eq: (column: string, value: any) => Promise.resolve({ data: null, error: null }),
-        data: null, 
-        error: null
-      }),
-    }),
-    auth: {
-      // Mock auth methods that match the Supabase API
-      signInWithPassword: (credentials: { email: string; password: string }) => 
-        Promise.resolve({ data: null, error: null }),
-      
-      signUp: (credentials: { 
-        email: string; 
-        password: string; 
-        options?: { data: Record<string, any> } 
-      }) => Promise.resolve({ data: null, error: null }),
-      
-      signOut: () => Promise.resolve({ error: null }),
-      
-      getSession: () => Promise.resolve({ 
+export const supabase = {
+  // This is a mock object to prevent errors
+  // Replace these with actual API calls in production
+  
+  from: (table: string) => ({
+    // Mock database operations with comments for where real API calls would go
+    select: () => {
+      // API CALL: GET data from your backend here
+      console.log(`Mock SELECT from ${table}`);
+      return { data: [], error: null };
+    },
+    insert: (data: any) => {
+      // API CALL: POST data to your backend here
+      console.log(`Mock INSERT into ${table}`, data);
+      return Promise.resolve({ data, error: null });
+    },
+    update: (data: any) => {
+      // API CALL: PUT/PATCH data to your backend here
+      console.log(`Mock UPDATE in ${table}`, data);
+      return { 
+        eq: () => Promise.resolve({ data, error: null }) 
+      };
+    },
+    delete: () => {
+      // API CALL: DELETE data from your backend here
+      console.log(`Mock DELETE from ${table}`);
+      return { 
+        eq: () => Promise.resolve({ data: null, error: null }) 
+      };
+    }
+  }),
+  
+  auth: {
+    // Mock auth methods with comments for where real auth API calls would go
+    signInWithPassword: (credentials: { email: string; password: string }) => {
+      // API CALL: Authenticate user with email/password
+      console.log('Mock sign in', credentials);
+      return Promise.resolve({ data: { user: { id: 'mock-user-id', email: credentials.email } }, error: null });
+    },
+    
+    signUp: (credentials: any) => {
+      // API CALL: Register new user
+      console.log('Mock sign up', credentials);
+      return Promise.resolve({ data: { user: { id: 'mock-user-id', email: credentials.email } }, error: null });
+    },
+    
+    signOut: () => {
+      // API CALL: Sign out user
+      console.log('Mock sign out');
+      return Promise.resolve({ error: null });
+    },
+    
+    getSession: () => {
+      // API CALL: Get current session
+      console.log('Mock get session');
+      return Promise.resolve({ 
         data: { 
-          session: null 
+          session: { 
+            user: { id: 'mock-user-id', email: 'user@example.com' } 
+          } 
         }, 
         error: null 
-      }),
-      
-      resetPasswordForEmail: (email: string, options?: { redirectTo: string }) => 
-        Promise.resolve({ data: null, error: null }),
-      
-      updateUser: (attributes: { password?: string }) => 
-        Promise.resolve({ data: null, error: null }),
-      
-      onAuthStateChange: (callback: Function) => ({
+      });
+    },
+    
+    resetPasswordForEmail: (email: string) => {
+      // API CALL: Send password reset email
+      console.log('Mock password reset for', email);
+      return Promise.resolve({ data: {}, error: null });
+    },
+    
+    updateUser: (data: any) => {
+      // API CALL: Update user data
+      console.log('Mock update user', data);
+      return Promise.resolve({ data: {}, error: null });
+    },
+    
+    onAuthStateChange: (callback: Function) => {
+      // API CALL: Subscribe to auth state changes
+      console.log('Mock auth state change subscription');
+      return {
         data: { 
           subscription: { 
-            unsubscribe: () => {} 
-          } 
+            unsubscribe: () => console.log('Mock unsubscribe') 
+          }
         }
-      }),
-    },
-  };
+      };
+    }
+  }
 };
-
-// Example comment: In a real app, you would import the Supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
-
-export const supabase = createMockClient();
