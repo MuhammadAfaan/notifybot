@@ -16,6 +16,9 @@ const OrderCredits = () => {
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
   const handleViewInvoice = (invoiceNo: string, credits: number, totalPaid: string) => {
+    // In a real app, this would fetch the invoice data from API
+    // Example: const response = await fetch(`/api/invoices/${invoiceNo}`);
+    
     setSelectedInvoice({ invoiceNo, credits, totalPaid });
     setIsInvoiceModalOpen(true);
   };
@@ -31,10 +34,9 @@ const OrderCredits = () => {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6 relative overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
         <h2 className="text-lg font-medium mb-2">Available Credits</h2>
         <p className="text-5xl font-bold">500</p>
-        <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-tr from-transparent to-blue-100/50 rounded-b-lg"></div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -44,7 +46,7 @@ const OrderCredits = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left border-b border-gray-200">
+              <tr className="text-left border-b border-gray-200 bg-gray-50">
                 <th className="p-4 font-medium">Invoice No</th>
                 <th className="p-4 font-medium">Credits</th>
                 <th className="p-4 font-medium">Total Paid</th>
@@ -54,11 +56,18 @@ const OrderCredits = () => {
             </thead>
             <tbody>
               <tr className="border-b border-gray-100">
-                <td className="p-4">gDelTi</td>
+                <td className="p-4">
+                  <button 
+                    className="text-blue-600 hover:underline font-medium"
+                    onClick={() => handleViewInvoice('gDelTi', 1000, 'PKR 5,500')}
+                  >
+                    gDelTi
+                  </button>
+                </td>
                 <td className="p-4">1000</td>
                 <td className="p-4">PKR 5,500</td>
                 <td className="p-4">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Pending</span>
+                  <span className="px-2.5 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Pending</span>
                 </td>
                 <td className="p-4">
                   <Button 
@@ -72,11 +81,18 @@ const OrderCredits = () => {
                 </td>
               </tr>
               <tr className="border-b border-gray-100">
-                <td className="p-4">xRt7Yl</td>
+                <td className="p-4">
+                  <button 
+                    className="text-blue-600 hover:underline font-medium"
+                    onClick={() => handleViewInvoice('xRt7Yl', 500, 'PKR 3,000')}
+                  >
+                    xRt7Yl
+                  </button>
+                </td>
                 <td className="p-4">500</td>
                 <td className="p-4">PKR 3,000</td>
                 <td className="p-4">
-                  <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Completed</span>
+                  <span className="px-2.5 py-1 bg-green-100 text-green-600 rounded-full text-xs">Completed</span>
                 </td>
                 <td className="p-4">
                   <Button 

@@ -104,38 +104,6 @@ const AvailableTagsTable = () => {
   );
 };
 
-// Success Toast Actions component
-const TemplateCreatedActions = ({ onView, onEdit, onCreateAnother }) => {
-  return (
-    <div className="flex flex-col md:flex-row gap-2 mt-2">
-      <Button 
-        size="sm" 
-        variant="outline" 
-        className="bg-white border-white hover:bg-white/90 text-green-700"
-        onClick={onView}
-      >
-        <EyeIcon className="mr-1 h-4 w-4" /> View Template
-      </Button>
-      <Button 
-        size="sm" 
-        variant="outline" 
-        className="bg-white border-white hover:bg-white/90 text-green-700"
-        onClick={onEdit}
-      >
-        <Edit className="mr-1 h-4 w-4" /> Edit Again
-      </Button>
-      <Button 
-        size="sm" 
-        variant="outline" 
-        className="bg-white border-white hover:bg-white/90 text-green-700"
-        onClick={onCreateAnother}
-      >
-        <Plus className="mr-1 h-4 w-4" /> Create Another
-      </Button>
-    </div>
-  );
-};
-
 const ShopifyTemplates = () => {
   const { toast } = useToast();
   
@@ -176,15 +144,46 @@ const ShopifyTemplates = () => {
     const fetchTemplates = () => {
       setLoading(true);
       
+      // In a real application, API call would be here
+      // Example: const response = await fetch('/api/templates');
+      
       setTimeout(() => {
         // Mock data
-        const mockTemplates: Template[] = [];
+        const mockTemplates: Template[] = [
+          {
+            id: 'temp-1',
+            name: 'Order Created Message',
+            event: 'order.created',
+            device: 'dev-1',
+            message: 'Dear [User Name], your order #[Order No.] has been created successfully!',
+            createdAt: '2025-04-01T12:00:00Z',
+            status: 'active'
+          },
+          {
+            id: 'temp-2',
+            name: 'Order Fulfilled Message',
+            event: 'order.fulfilled',
+            device: 'dev-2',
+            message: 'Dear [User Name], your order #[Order No.] has been fulfilled!',
+            createdAt: '2025-04-02T12:00:00Z',
+            status: 'active'
+          },
+          {
+            id: 'temp-3',
+            name: 'Order Cancelled Message',
+            event: 'order.cancelled',
+            device: 'dev-3',
+            message: 'Dear [User Name], your order #[Order No.] has been cancelled.',
+            createdAt: '2025-04-03T12:00:00Z',
+            status: 'inactive'
+          }
+        ];
         
         setTemplates(mockTemplates);
         setStats({
-          total: 0,
-          active: 0,
-          inactive: 0
+          total: mockTemplates.length,
+          active: mockTemplates.filter(d => d.status === 'active').length,
+          inactive: mockTemplates.filter(d => d.status === 'inactive').length
         });
         
         setLoading(false);
@@ -235,19 +234,11 @@ const ShopifyTemplates = () => {
     setNewTemplate({ name: '', event: '', device: '', message: '' });
     setIsDialogOpen(false);
     
-    // Show success message with actions
+    // Show success message
     toast({
       title: "Shopify Message Created",
       description: "Your new template has been created successfully.",
       variant: "success",
-      action: (
-        <TemplateCreatedActions 
-          onView={() => handleViewTemplate(createdTemplate)}
-          onEdit={() => handleEditTemplate(createdTemplate)}
-          onCreateAnother={() => setIsDialogOpen(true)}
-        />
-      ),
-      duration: 5000,
     });
   };
 
@@ -476,15 +467,15 @@ const ShopifyTemplates = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 md:p-6 shadow-sm">
+        <div className="bg-blue-50 rounded-lg p-4 md:p-6">
           <h3 className="text-gray-600 font-medium mb-2">Total Messages</h3>
           <p className="text-3xl md:text-4xl font-bold text-gray-800">{stats.total}</p>
         </div>
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 md:p-6 shadow-sm">
+        <div className="bg-green-50 rounded-lg p-4 md:p-6">
           <h3 className="text-gray-600 font-medium mb-2">Active Messages</h3>
           <p className="text-3xl md:text-4xl font-bold text-green-600">{stats.active}</p>
         </div>
-        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 md:p-6 shadow-sm">
+        <div className="bg-red-50 rounded-lg p-4 md:p-6">
           <h3 className="text-gray-600 font-medium mb-2">Inactive Messages</h3>
           <p className="text-3xl md:text-4xl font-bold text-orange-500">{stats.inactive}</p>
         </div>
@@ -501,7 +492,7 @@ const ShopifyTemplates = () => {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {templates.map((template) => (
             <div key={template.id} className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-between items-start">
@@ -544,8 +535,12 @@ const ShopifyTemplates = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-500">Status:</label>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-800">
-                    ACTIVE
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium ${
+                    template.status === 'active' 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {template.status.toUpperCase()}
                   </span>
                 </div>
               </div>

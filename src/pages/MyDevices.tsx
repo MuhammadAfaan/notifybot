@@ -38,6 +38,9 @@ const MyDevices = () => {
   useEffect(() => {
     // Simulating API fetch with setTimeout
     const fetchDevices = () => {
+      // In a real app, API call would be here
+      // Example: const response = await fetch('/api/devices');
+      
       setTimeout(() => {
         // This is mock data - would typically come from an API endpoint
         const mockDevices: Device[] = [
@@ -106,30 +109,27 @@ const MyDevices = () => {
         </Link>
       </div>
 
-      {/* Stats cards - data loaded dynamically from the server */}
+      {/* Stats cards - with improved color styling */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-sm p-6 relative overflow-hidden">
+        <div className="bg-blue-50 rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-start mb-2">
             <h2 className="text-lg font-medium">Total Devices</h2>
           </div>
           <p className="text-4xl font-bold">{stats.total}</p>
-          <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-tr from-transparent to-blue-100/50 rounded-b-lg"></div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 relative overflow-hidden">
+        <div className="bg-green-50 rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-start mb-2">
             <h2 className="text-lg font-medium">Active Devices</h2>
           </div>
           <p className="text-4xl font-bold text-green-500">{stats.active}</p>
-          <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-tr from-transparent to-green-100/50 rounded-b-lg"></div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 relative overflow-hidden">
+        <div className="bg-red-50 rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-start mb-2">
             <h2 className="text-lg font-medium">Inactive Devices</h2>
           </div>
           <p className="text-4xl font-bold text-orange-500">{stats.inactive}</p>
-          <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-tr from-transparent to-orange-100/50 rounded-b-lg"></div>
         </div>
       </div>
 
