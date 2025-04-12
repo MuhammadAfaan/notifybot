@@ -1,29 +1,32 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import { componentTagger } from "lovable-tagger";
-import { createHtmlPlugin } from 'vite-plugin-html'; // Add this import
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react-swc"
+import { createHtmlPlugin } from "vite-plugin-html"
+import path from "path"
 
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-  },
+export default defineConfig({
   plugins: [
     react(),
-    createHtmlPlugin({ // Add this plugin configuration
+    createHtmlPlugin({
       minify: true,
       inject: {
         data: {
-          title: 'orderly' // This will be your new title
+          title: "orderly",
+          description: "Your custom app description"
         }
       }
-    }),
-    mode === 'development' && componentTagger(),
-  ].filter(Boolean),
+    })
+  ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+      "@": path.resolve(__dirname, "./src")
+    }
   },
-}));
+  build: {
+    rollupOptions: {
+      external: [], // Block external scripts
+      output: {
+        manualChunks: undefined
+      }
+    }
+  }
+})
