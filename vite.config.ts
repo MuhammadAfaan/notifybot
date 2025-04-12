@@ -11,8 +11,8 @@ export default defineConfig({
       minify: true,
       inject: {
         data: {
-          title: "orderly",
-          description: "Your custom app description"
+          title: "NotifyBot",
+          description: "WhatsApp Order Management System"
         }
       }
     })
