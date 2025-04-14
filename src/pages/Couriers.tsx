@@ -20,22 +20,6 @@ const Couriers = () => {
     //   setCouriers(data);
     // };
     // fetchCouriers();
-    
-    // Listen for courier creation events
-    const handleCourierCreated = (event: CustomEvent) => {
-      if (event.detail && event.detail.courier) {
-        const newCourier = event.detail.courier;
-        setCouriers(prev => [...prev, newCourier]);
-      }
-    };
-
-    // Add event listener
-    window.addEventListener('courierCreated', handleCourierCreated as EventListener);
-    
-    // Clean up event listener
-    return () => {
-      window.removeEventListener('courierCreated', handleCourierCreated as EventListener);
-    };
   }, []);
 
   return (

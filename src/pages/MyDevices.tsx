@@ -29,7 +29,7 @@ const MyDevices = () => {
 
   // Mock API call to fetch devices - in a real application, this would be an API call
   useEffect(() => {
-    // Simulate API fetch with setTimeout
+    // Simulating API fetch with setTimeout
     // In a real application, this would be replaced with an actual API call
     const fetchDevices = () => {
       setTimeout(() => {
@@ -63,27 +63,6 @@ const MyDevices = () => {
     };
 
     fetchDevices();
-
-    // Listen for device creation events
-    const handleDeviceCreated = (event: CustomEvent) => {
-      if (event.detail && event.detail.device) {
-        const newDevice = event.detail.device;
-        setDevices(prev => [...prev, newDevice]);
-        setStats(prev => ({
-          total: prev.total + 1,
-          active: newDevice.status === 'ACTIVE' ? prev.active + 1 : prev.active,
-          inactive: newDevice.status === 'INACTIVE' ? prev.inactive + 1 : prev.inactive
-        }));
-      }
-    };
-
-    // Add event listener
-    window.addEventListener('deviceCreated', handleDeviceCreated as EventListener);
-    
-    // Clean up event listener
-    return () => {
-      window.removeEventListener('deviceCreated', handleDeviceCreated as EventListener);
-    };
   }, []);
 
   // Summary statistics calculated from the devices data

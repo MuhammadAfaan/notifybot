@@ -41,22 +41,6 @@ const NewDevice = () => {
     // Simulate getting a device ID from the API
     const mockDeviceId = Math.random().toString(36).substring(2, 15);
     setDeviceId(mockDeviceId);
-    
-    // Create a new device object
-    const newDevice = {
-      id: mockDeviceId,
-      name: data.deviceName,
-      phone: '',
-      totalMessages: 0,
-      status: 'INACTIVE' as const
-    };
-    
-    // Dispatch a custom event with the new device
-    const deviceCreatedEvent = new CustomEvent('deviceCreated', {
-      detail: { device: newDevice }
-    });
-    window.dispatchEvent(deviceCreatedEvent);
-    
     setStep('qr');
   };
 

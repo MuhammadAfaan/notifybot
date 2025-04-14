@@ -38,22 +38,6 @@ const NewCourier = () => {
       //   body: JSON.stringify(formData)
       // });
 
-      // Create a new courier object
-      const newCourier = {
-        id: Math.random().toString(36).substring(2, 15),
-        name: formData.company,
-        company: formData.company,
-        apiKey: formData.apiKey,
-        status: formData.status ? 'active' : 'inactive',
-        lastActive: new Date().toISOString()
-      };
-      
-      // Dispatch a custom event with the new courier
-      const courierCreatedEvent = new CustomEvent('courierCreated', {
-        detail: { courier: newCourier }
-      });
-      window.dispatchEvent(courierCreatedEvent);
-
       toast({
         title: "Success",
         description: "Courier service added successfully",
