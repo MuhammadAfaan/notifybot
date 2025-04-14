@@ -24,13 +24,5 @@ export default defineConfig({
   },
   server: {
     port: 8080
-  },
-  build: {
-    rollupOptions: {
-      external: [], // Block external scripts
-      output: {
-        manualChunks: undefined
-      }
-    }
   }
 })
