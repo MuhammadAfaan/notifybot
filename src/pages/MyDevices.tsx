@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
+import { MoreHorizontal, Smartphone, QrCode, Edit, Trash } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { MoreHorizontal, Smartphone, QrCode, Edit, Trash, Plus } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,13 +27,22 @@ const MyDevices = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Summary statistics that would be calculated from the devices data
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    inactive: 0
+  });
+
   // Mock API call to fetch devices - in a real application, this would be an API call
   useEffect(() => {
     // Simulating API fetch with setTimeout
-    // In a real application, this would be replaced with an actual API call
     const fetchDevices = () => {
+      // In a real app, API call would be here
+      // Example: const response = await fetch('/api/devices');
+      
       setTimeout(() => {
-        // Mock data - would come from an API in a real application
+        // This is mock data - would typically come from an API endpoint
         const mockDevices: Device[] = [
           {
             id: '1',
@@ -52,6 +61,8 @@ const MyDevices = () => {
         ];
         
         setDevices(mockDevices);
+        
+        // Calculate statistics
         setStats({
           total: mockDevices.length,
           active: mockDevices.filter(d => d.status === 'ACTIVE').length,
@@ -64,32 +75,6 @@ const MyDevices = () => {
 
     fetchDevices();
   }, []);
-
-  // Summary statistics calculated from the devices data
-  const [stats, setStats] = useState({
-    total: 0,
-    active: 0,
-    inactive: 0
-  });
-
-  const handleRemoveDevice = (deviceId: string, deviceName: string) => {
-    // In a real application, this would be an API call to delete the device
-    // API call would be like: await api.delete(`/devices/${deviceId}`);
-    
-    setDevices(prevDevices => prevDevices.filter(device => device.id !== deviceId));
-    
-    // Updating stats after removal
-    setStats(prevStats => ({
-      total: prevStats.total - 1,
-      active: devices.filter(d => d.status === 'ACTIVE' && d.id !== deviceId).length,
-      inactive: devices.filter(d => d.status === 'INACTIVE' && d.id !== deviceId).length
-    }));
-
-    toast({
-      title: "Device Deleted",
-      description: `Device "${deviceName}" has been removed.`,
-    });
-  };
 
   const handleScanQR = (deviceName: string) => {
     toast({
@@ -105,19 +90,26 @@ const MyDevices = () => {
     });
   };
 
+  const handleRemoveDevice = (deviceName: string) => {
+    toast({
+      title: "Remove Device",
+      description: `Removing device: ${deviceName}. Please confirm this action.`,
+      variant: "destructive",
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">My Devices</h1>
         <Link to="/devices/new">
-          <Button className="bg-notifybot-blue hover:bg-notifybot-dark-blue">
-            <Plus className="mr-2 h-4 w-4" />
+          <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
             Create Device
           </Button>
         </Link>
       </div>
 
-      {/* Stats cards with NotifyBot theme */}
+      {/* Stats cards - with improved color styling */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-blue-50 rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-start mb-2">
@@ -141,25 +133,18 @@ const MyDevices = () => {
         </div>
       </div>
 
-      {/* Devices grid with NotifyBot theme */}
+      {/* Devices grid - dynamically loaded from API */}
       {loading ? (
         <div className="bg-white rounded-lg shadow-sm p-6 text-center">
           <p className="text-gray-500">Loading devices...</p>
         </div>
       ) : devices.length === 0 ? (
-        <div className="text-center py-12">
-          <Smartphone className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No devices found</h3>
-          <p className="text-gray-500 mb-4">Get started by adding your first device.</p>
-          <Link to="/devices/new">
-            <Button className="bg-notifybot-blue hover:bg-notifybot-dark-blue">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Device
-            </Button>
-          </Link>
+        <div className="bg-white rounded-lg shadow-sm p-6 text-center">
+          <p className="text-gray-500">No devices found. Create your first device!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Map through devices from the API response */}
           {devices.map(device => (
             <div key={device.id} className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-between mb-4">
@@ -177,10 +162,7 @@ const MyDevices = () => {
                     <DropdownMenuItem onClick={() => handleEditDevice(device.name)} className="cursor-pointer">
                       <Edit className="mr-2 h-4 w-4" /> Edit Device Name
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => handleRemoveDevice(device.id, device.name)} 
-                      className="text-red-500 cursor-pointer hover:text-red-600 hover:bg-red-50"
-                    >
+                    <DropdownMenuItem onClick={() => handleRemoveDevice(device.name)} className="text-red-500 cursor-pointer hover:text-red-600 hover:bg-red-50">
                       <Trash className="mr-2 h-4 w-4" /> Remove
                     </DropdownMenuItem>
                   </DropdownMenuContent>
