@@ -1,11 +1,12 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import NotifyBotLogo from './NotifyBotLogo';
 import { 
   LayoutDashboard, 
   Smartphone, 
-  ShoppingBag, 
+  ShoppingBag,
+  Truck,
+  FileText,
   Book, 
   MessageSquare,
   HelpCircle,
@@ -30,8 +31,6 @@ const SidebarItem = ({ icon, label, to, active }: SidebarItemProps) => (
 const NotifyBotSidebar = () => {
   const location = useLocation();
   const path = location.pathname;
-
-  // This credits value would normally be loaded from an API
   const availableCredits = 500;
 
   return (
@@ -49,7 +48,6 @@ const NotifyBotSidebar = () => {
         />
       </div>
 
-      {/* Credits card - This would normally fetch data from the server */}
       <div className="bg-gradient-to-br from-notifybot-blue to-notifybot-blue/80 text-white rounded-lg p-4 mb-6">
         <div className="text-sm font-medium mb-2">Available Credits</div>
         <div className="text-2xl font-bold text-white mb-1">{availableCredits}</div>
@@ -57,7 +55,6 @@ const NotifyBotSidebar = () => {
 
       <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 mb-2">App</div>
       <div className="space-y-1 mb-6">
-        {/* These links would typically be configured based on user permissions */}
         <SidebarItem 
           icon={<Smartphone size={18} />} 
           label="My Devices" 
@@ -65,10 +62,22 @@ const NotifyBotSidebar = () => {
           active={path.includes('devices')} 
         />
         <SidebarItem 
+          icon={<Truck size={18} />} 
+          label="Couriers" 
+          to="/couriers" 
+          active={path.includes('couriers') && !path.includes('templates')} 
+        />
+        <SidebarItem 
           icon={<ShoppingBag size={18} />} 
           label="Shopify Templates" 
           to="/shopify-templates" 
           active={path.includes('shopify')} 
+        />
+        <SidebarItem 
+          icon={<FileText size={18} />} 
+          label="Courier Templates" 
+          to="/courier-templates" 
+          active={path.includes('courier-templates')} 
         />
         <SidebarItem 
           icon={<Book size={18} />} 
@@ -106,10 +115,8 @@ const NotifyBotSidebar = () => {
         />
       </div>
       
-      {/* Spacer to push content to the top */}
       <div className="flex-1"></div>
       
-      {/* Version info at bottom */}
       <div className="text-xs text-gray-400 mt-4 text-center">
         NotifyBot v1.0.0
       </div>
