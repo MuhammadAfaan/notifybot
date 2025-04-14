@@ -1,3 +1,4 @@
+
 import React from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
@@ -131,6 +132,27 @@ const CourierTemplates = () => {
     //   });
     // };
     // fetchTemplates();
+    
+    // Listen for template creation events
+    const handleTemplateCreated = (event: CustomEvent) => {
+      if (event.detail && event.detail.template) {
+        const newTemplate = event.detail.template;
+        setTemplates(prev => [...prev, newTemplate]);
+        setStats(prev => ({
+          total: prev.total + 1,
+          active: newTemplate.status === 'active' ? prev.active + 1 : prev.active,
+          inactive: newTemplate.status === 'inactive' ? prev.inactive + 1 : prev.inactive
+        }));
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('templateCreated', handleTemplateCreated as EventListener);
+    
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('templateCreated', handleTemplateCreated as EventListener);
+    };
   }, []);
 
   const handleCreateTemplate = async () => {
@@ -141,6 +163,23 @@ const CourierTemplates = () => {
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify(newTemplate)
       // });
+      
+      // Create a new template object
+      const template: Template = {
+        id: Math.random().toString(36).substring(2, 15),
+        name: newTemplate.name,
+        event: newTemplate.event,
+        courier: newTemplate.courier,
+        message: newTemplate.message,
+        createdAt: new Date().toISOString(),
+        status: 'active'
+      };
+      
+      // Dispatch a custom event with the new template
+      const templateCreatedEvent = new CustomEvent('templateCreated', {
+        detail: { template }
+      });
+      window.dispatchEvent(templateCreatedEvent);
 
       toast({
         title: "Template Created",
@@ -341,6 +380,48 @@ const CourierTemplates = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Template cards would go here */}
+          {templates.map(template => (
+            <div key={template.id} className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex justify-between mb-4">
+                <h3 className="text-lg font-medium">{template.name}</h3>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full p-1">
+                      <MoreHorizontal size={20} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Copy className="mr-2 h-4 w-4" /> Duplicate
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-500 cursor-pointer hover:text-red-600 hover:bg-red-50">
+                      <Trash className="mr-2 h-4 w-4" /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Event:</span>
+                  <span>{formatEventName(template.event)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Status:</span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                    template.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {template.status.toUpperCase()}
+                  </span>
+                </div>
+                <div className="text-sm text-gray-600 mt-2">
+                  <p className="line-clamp-2">{template.message}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </DashboardLayout>
