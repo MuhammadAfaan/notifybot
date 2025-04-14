@@ -10,7 +10,7 @@ const ContactBook = () => {
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Contact Book</h1>
-        <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
+        <Button className="bg-notifybot-blue hover:bg-notifybot-dark-blue">
           <Plus size={16} className="mr-1" /> Add Contact
         </Button>
       </div>

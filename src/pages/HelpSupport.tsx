@@ -73,7 +73,7 @@ const HelpSupport = () => {
 
             <Button 
               type="submit" 
-              className="bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+              className="bg-notifybot-blue hover:bg-notifybot-dark-blue"
               disabled={loading}
             >
               {loading ? "Sending..." : "Send Message"}
