@@ -1,85 +1,134 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Eye } from 'lucide-react';
+import InvoiceModal from '@/components/InvoiceModal';
 
 const OrderCredits = () => {
+  const [selectedInvoice, setSelectedInvoice] = useState<{
+    invoiceNo: string;
+    credits: number;
+    totalPaid: string;
+  } | null>(null);
+
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+
+  const handleViewInvoice = (invoiceNo: string, credits: number, totalPaid: string) => {
+    // In a real app, this would fetch the invoice data from API
+    // Example: const response = await fetch(`/api/invoices/${invoiceNo}`);
+    
+    setSelectedInvoice({ invoiceNo, credits, totalPaid });
+    setIsInvoiceModalOpen(true);
+  };
+
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h1 className="text-2xl font-semibold mb-4">Order Credits</h1>
-          <p className="text-gray-600 mb-6">Purchase credits to send WhatsApp messages to your customers.</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-notifybot-bg rounded-lg p-6 border border-notifybot-blue/20">
-              <h3 className="text-xl font-semibold mb-2">Starter</h3>
-              <p className="text-3xl font-bold text-notifybot-blue mb-4">$10</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-gray-600">
-                  <span className="mr-2">•</span>
-                  100 Credits
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <span className="mr-2">•</span>
-                  Valid for 30 days
-                </li>
-              </ul>
-              <Link to="/purchase-credits">
-                <Button className="w-full bg-notifybot-blue hover:bg-notifybot-dark-blue">
-                  Purchase Now
-                </Button>
-              </Link>
-            </div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold">Credits</h1>
+        <Link to="/purchase-credits">
+          <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
+            Purchase
+          </Button>
+        </Link>
+      </div>
 
-            <div className="bg-notifybot-bg rounded-lg p-6 border-2 border-notifybot-blue relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-notifybot-blue text-white text-xs px-3 py-1 rounded-full">
-                  Popular
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Professional</h3>
-              <p className="text-3xl font-bold text-notifybot-blue mb-4">$25</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-gray-600">
-                  <span className="mr-2">•</span>
-                  300 Credits
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <span className="mr-2">•</span>
-                  Valid for 60 days
-                </li>
-              </ul>
-              <Link to="/purchase-credits">
-                <Button className="w-full bg-notifybot-blue hover:bg-notifybot-dark-blue">
-                  Purchase Now
-                </Button>
-              </Link>
-            </div>
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <h2 className="text-lg font-medium mb-2">Available Credits</h2>
+        <p className="text-5xl font-bold">500</p>
+      </div>
 
-            <div className="bg-notifybot-bg rounded-lg p-6 border border-notifybot-blue/20">
-              <h3 className="text-xl font-semibold mb-2">Enterprise</h3>
-              <p className="text-3xl font-bold text-notifybot-blue mb-4">$50</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-gray-600">
-                  <span className="mr-2">•</span>
-                  700 Credits
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <span className="mr-2">•</span>
-                  Valid for 90 days
-                </li>
-              </ul>
-              <Link to="/purchase-credits">
-                <Button className="w-full bg-notifybot-blue hover:bg-notifybot-dark-blue">
-                  Purchase Now
-                </Button>
-              </Link>
-            </div>
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-xl font-semibold">Credit Histories</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="text-left border-b border-gray-200 bg-gray-50">
+                <th className="p-4 font-medium">Invoice No</th>
+                <th className="p-4 font-medium">Credits</th>
+                <th className="p-4 font-medium">Total Paid</th>
+                <th className="p-4 font-medium">Status</th>
+                <th className="p-4 font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-gray-100">
+                <td className="p-4">
+                  <button 
+                    className="text-blue-600 hover:underline font-medium"
+                    onClick={() => handleViewInvoice('gDelTi', 1000, 'PKR 5,500')}
+                  >
+                    gDelTi
+                  </button>
+                </td>
+                <td className="p-4">1000</td>
+                <td className="p-4">PKR 5,500</td>
+                <td className="p-4">
+                  <span className="px-2.5 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Pending</span>
+                </td>
+                <td className="p-4">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => handleViewInvoice('gDelTi', 1000, 'PKR 5,500')}
+                  >
+                    <Eye size={16} />
+                  </Button>
+                </td>
+              </tr>
+              <tr className="border-b border-gray-100">
+                <td className="p-4">
+                  <button 
+                    className="text-blue-600 hover:underline font-medium"
+                    onClick={() => handleViewInvoice('xRt7Yl', 500, 'PKR 3,000')}
+                  >
+                    xRt7Yl
+                  </button>
+                </td>
+                <td className="p-4">500</td>
+                <td className="p-4">PKR 3,000</td>
+                <td className="p-4">
+                  <span className="px-2.5 py-1 bg-green-100 text-green-600 rounded-full text-xs">Completed</span>
+                </td>
+                <td className="p-4">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => handleViewInvoice('xRt7Yl', 500, 'PKR 3,000')}
+                  >
+                    <Eye size={16} />
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="p-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
+          <div>Showing 1 to 2 of 2 entries</div>
+          <div className="flex space-x-1">
+            <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">«</Button>
+            <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">‹</Button>
+            <Button size="sm" className="h-8 w-8 p-0 bg-custom-orderly-green text-white">1</Button>
+            <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">›</Button>
+            <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">»</Button>
           </div>
         </div>
       </div>
+
+      {selectedInvoice && (
+        <InvoiceModal
+          invoiceNo={selectedInvoice.invoiceNo}
+          credits={selectedInvoice.credits}
+          totalPaid={selectedInvoice.totalPaid}
+          isOpen={isInvoiceModalOpen}
+          onClose={() => setIsInvoiceModalOpen(false)}
+        />
+      )}
     </DashboardLayout>
   );
 };
