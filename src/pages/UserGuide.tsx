@@ -7,8 +7,8 @@ const UserGuide = () => {
   return (
     <DashboardLayout>
       <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <h1 className="text-2xl font-semibold mb-4">How to use Orderly.pk?</h1>
-        <p className="text-gray-600">Below you'll find video tutorials to the use features of Orderly.pk</p>
+        <h1 className="text-2xl font-semibold mb-4">How to use NotifyBot.pk?</h1>
+        <p className="text-gray-600">Below you'll find video tutorials to the use features of NotifyBot.pk</p>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">

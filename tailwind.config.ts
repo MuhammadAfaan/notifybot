@@ -65,10 +65,6 @@ export default {
 				},
 				custom: {
 					'soft-blue': '#D3E4FD',
-					'olive-green': '#4A4A25',
-					'orderly-green': '#536734',
-					'orderly-light-green': '#9AB757',
-					'orderly-bg': '#EFF3FA'
 				},
 				notifybot: {
 					blue: '#00B5E2',

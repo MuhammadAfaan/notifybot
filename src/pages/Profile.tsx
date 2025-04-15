@@ -177,7 +177,7 @@ const Profile = () => {
             <div className="flex justify-end">
               <Button 
                 type="submit" 
-                className="bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+                className="bg-notifybot-blue hover:bg-notifybot-blue/90 text-white"
                 disabled={loading}
               >
                 {loading ? "Updating..." : "Update"}
@@ -212,7 +212,7 @@ const Profile = () => {
             
             <Button 
               type="submit" 
-              className="w-full bg-custom-orderly-green hover:bg-custom-orderly-green/90"
+              className="w-full bg-notifybot-blue hover:bg-notifybot-blue/90 text-white"
               disabled={loading}
             >
               {loading ? "Updating..." : "Update Password"}

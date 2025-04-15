@@ -141,7 +141,7 @@ const InvoiceModal = ({ invoiceNo, credits, totalPaid, isOpen, onClose }: Invoic
           <div className="p-6 bg-white rounded-md">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div>
-                <h1 className="text-2xl font-bold text-gray-800 mb-1">Orderly.pk</h1>
+                <h1 className="text-2xl font-bold text-gray-800 mb-1">NotifyBot.pk</h1>
                 <p className="text-sm text-gray-600">2nd Floor, Chenone</p>
                 <p className="text-sm text-gray-600">Multan, Pakistan</p>
               </div>

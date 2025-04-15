@@ -191,7 +191,7 @@ const Dashboard = () => {
           
           <Button 
             onClick={handleFilterClick}
-            className="bg-[#3D4A2D] hover:bg-[#4E5B3E] text-white"
+            className="bg-notifybot-blue hover:bg-notifybot-dark-blue"
           >
             <FilterIcon size={16} className="mr-2" />
             Filter

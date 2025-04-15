@@ -28,7 +28,7 @@ const OrderCredits = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Credits</h1>
         <Link to="/purchase-credits">
-          <Button className="bg-custom-orderly-green hover:bg-custom-orderly-green/90">
+          <Button className="bg-notifybot-blue hover:bg-notifybot-dark-blue">
             Purchase
           </Button>
         </Link>
@@ -113,7 +113,7 @@ const OrderCredits = () => {
           <div className="flex space-x-1">
             <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">«</Button>
             <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">‹</Button>
-            <Button size="sm" className="h-8 w-8 p-0 bg-custom-orderly-green text-white">1</Button>
+            <Button size="sm" className="h-8 w-8 p-0 bg-notifybot-blue text-white">1</Button>
             <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">›</Button>
             <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">»</Button>
           </div>
